@@ -1,6 +1,6 @@
-% Readme
+% MRG Toolbox Notes
 % Daniel Pritchard
-% 2012-09-18
+% 26/11/2012
 
 
 Coding Practice
