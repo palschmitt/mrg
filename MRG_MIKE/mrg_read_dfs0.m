@@ -1,5 +1,5 @@
 function RecData = mrg_read_dfs0(varargin)
-% A function to read all entries from DFS0 files.
+% Read all entries from a DFS0 file.
 %
 % INPUT
 %   ...         An optional charater string specifying the file name (or
@@ -33,7 +33,10 @@ function RecData = mrg_read_dfs0(varargin)
 %           Compatible with MIKE 2011 and 20110304 toolbox. DP
 %           Uses Dfs0Util (from the MIKE toolbox). DP
 %           Standard info returned with self-expanatory fieldnames. DP
-%           The items field is not 100% backwards compatible (yet). DP
+%           The 'items' field is not 100% backwards compatible (yet). DP
+%   v 1.5   Added ability to return useful time info from NonEqudistant
+%           files.  DP
+%
 % TODO
 %   Although the actual data reading (via Dfs0Util) is faster, this code
 %   is slower overall than the orignal Read_dfs0.  This might be
@@ -51,7 +54,7 @@ if isempty(varargin)
     [fname,path] = uigetfile('*.dfs0','Select the .dfs0');
     name = [path,fname];
 elseif (~exist(char(varargin),'file'))
-    warning('mrg_read_dfs0:filenotfound', 'The file you supplied was not found')
+    warning([mfilename, ':filenotfound'], 'The file you supplied was not found.')
     [fname,path] = uigetfile('*.dfs0','Select the .dfs0');
     name = [path,fname];
 else
@@ -63,7 +66,7 @@ dfs0File  = DfsFileFactory.DfsGenericOpen(name);
 %% Read times and data for all items
 % Use the Dfs0Util for bulk-reading all data and timesteps
 dd = single(Dfs0Util.ReadDfs0DataDouble(dfs0File));
-%t = dd(:,1);
+t = dd(:,1);
 data = dd(:,2:end);
 
 %% Sort out time data
@@ -76,7 +79,7 @@ try
         dfs0File.FileInfo.TimeAxis.StartDateTime.Second];
 catch err
     disp(err.message);
-    warning('mrg_read_dfs0:startdatefail', 'Start date could not be determined from the DFS0 file.  Using 0000-00-00 00:00:00.')
+    warning([mfilename, ':startdatefail'], 'Start date could not be determined from the DFS0 file.  Using 0000-00-00 00:00:00.')
     start_date_vec = [0,0,0,0,0,0];
 end
 
@@ -103,7 +106,7 @@ try
     RecData.dTime(2) = dfs0File.FileInfo.TimeAxis.TimeStep;
 catch err
     disp(err.message);
-    warning('mrg_read_dfs0:timestepfail', 'Timestep length could not be determined from the DFS0 file.  Using NaN.')
+    warning([mfilename, ':timestepfail'], 'Timestep length could not be determined from the DFS0 file.  Using NaN.')
     RecData.dTime(2) = NaN;
 end
 RecData.dTime(3) = RecData.dTime(2)/(60*60*24);
@@ -124,6 +127,18 @@ RecData.StartDateNum = start_date_num;
 RecData.StartDateVec = start_date_vec;
 RecData.Fullname = char(dfs0File.FileInfo.FileName);
 RecData.TimeAxisType = char(dfs0File.FileInfo.TimeAxis.TimeAxisType);
+
+% If the file is a non-equidistant time axis, then build a timeaxis from
+% the data
+if ~isempty(strfind(RecData.TimeAxisType, 'NonEquidistant'))
+    if strcmp(char(dfs0File.FileInfo.TimeAxis.TimeUnit), 'eumUsec')
+        tmat = double(t)/60/60/24;
+        RecData.TimeAxis = RecData.StartDateNum+tmat;
+    else 
+        warning([mfilename, ':timeaxisbuildfail'], 'Tried to build a time axis for NonEquidistant, but failed becuase the timestep is not "eumUsec".')
+    end
+end
+
 % 'items' is not (yet) strictly backwards compatible, as we are missing
 % columns 4, 5 and 6 from Read_dfs0.m (Not sure what these columns are?!)
 RecData.items = items;

@@ -1,39 +1,47 @@
-function [data] = dfsu_exceed(exceed, chunk_size)
-%% A function to perform an exceedance analysis on a DFSU files.  It extracts
-% quantiles from each cell in a DFSU file (i.e. an analysis through the
-% time domain).
-    %
-    % Input:
-    % exceed = A vector representing the quantiles to extract.  Defualts to
-    %   [.10 .20 .30 .50]
-    % chunk_size = An integer specifying the size of the 'chunks' to break the
-    %   file up into.  Larger chunks may speed up runtime, but very large
-    %   chunks may lead to out of memory errors.  Defaults to 1000.
-    %
-    % Output:
-    % A MATLAB structure with n+3 items, where n is the number of 
-    %   quantiles requested, plus X, Y and Z data from the DFSU file.  
-    % A CSV file, derived from the MATLAB structure.
-    % A DFSU file with the same spatial extent as the analysed file, but 
-    %   with a single timestep will be written as 'inputfilename_exceed.dfsu'.
-    % 
-    % Requirements (i.e. must be available in your path): 
-    % The DHI/MIKE Matlab toolbox 2011 (developed with v. 20110304)
-    % Dan's 'struc2csv.m' function (assuming you want csv output, else it will be skipped)
-    %
-% Created by Daniel Prtichard (www.pritchard.co)
-% Distributed under a creative commons CC BY-SA licence.  See here:
-% http://creativecommons.org/licenses/by-sa/3.0/
+function [data] = mrg_dfsu_exceed(exceed, chunk_size)
+% Performs an exceedance analysis on a DFSU files.
 %
-% v 1.0 - DP. 6/7/2012
-%       - Initial attempt and distribution. 
-% v 1.1 - DP. 12/7/2012
-%       - Added better filenaming and removed error-causing 'factory' call. 
-% v 1.2 - DP. 19/7/2012
-%       - Now deals with delete values by using single() throughout (use of
-%       double() causes issues with rounding).
-%       - Much better estimation of time remaining.
-%%
+% INPUT
+%   exceed          A vector representing the quantiles to extract.  
+%                   Defualts to [.10 .20 .30 .50]
+%   chunk_size      An integer specifying the size of the 'chunks' to break 
+%                   the file up into.  Larger chunks may speed up runtime, 
+%                   but very large chunks may lead to out of memory errors.  
+%                   Defaults to 1000.
+%
+% OUTPUT
+%   A MATLAB structure with n+3 items, where n is the number of 
+%   quantiles requested, plus X, Y and Z data from the DFSU file.  
+%   A CSV file, derived from the MATLAB structure.
+%   A DFSU file with the same spatial extent as the analysed file, but 
+%   with a single timestep will be written as 'inputfilename_exceed.dfsu'.
+%
+% REQUIREMENTS
+%   The DHI/MIKE Matlab toolbox 2011 (developed with v. 20110304)
+%   mrg_struct_to_csv.m function (assuming you want csv output, else it will be skipped)
+%
+% NOTES
+% 	Extracts quantiles from each cell in a DFSU file (i.e. an analysis
+%   through the time domain).
+%
+% LICENCE
+%   Created by Daniel Pritchard (www.pritchard.co)
+%   Distributed under a creative commons CC BY-SA licence. See here:
+%   http://creativecommons.org/licenses/by-sa/3.0/
+%
+% DEVELOPMENT
+%   v 1.0   6/7/2012
+%           DP. Initial attempt and distribution. 
+%   v 1.1   12/7/2012
+%           DP. Added better filenaming and removed error-causing 'factory' call. 
+%   v 1.2   19/7/2012
+%           DP. Now deals with delete values by using single() throughout (use of
+%           double() causes issues with rounding).
+%           DP. Much better estimation of time remaining.
+%   v 1.3   14/02/2013
+%           DP. Documentation
+
+%% Go!
 % Exceedance values (a vector)
 if ~exist('exceed', 'var')
     exceed = [.10 .20 .30 .50];
@@ -164,14 +172,14 @@ for j=1:seq_len
 end
 
 %% Here we write out a CSV file
-if exist('struc2csv.m', 'file') == 2
+if exist('mrg_struct_to_csv.m', 'file') == 2
     disp('Writing exceedance values to a CSV file.')
     out_file = [filename(1:end-5),'_',regexprep(items{choice,1},' ',''),'_exceed.csv'];
     out_file_full = [filepath,out_file];
-    struc2csv(data, out_file_full);
+    mrg_struct_to_csv(data, out_file_full);
     disp(['Output CSV file (', out_file, ') written successfully.'])
 else
-    disp('struc2csv.m not avilable in your search path.  No CSV file will be generated.')
+    disp('mrg_struct_to_csv.m not avilable in your search path.  No CSV file will be generated.')
 end
 
 %% Here we  stick data into a DFSU file

@@ -1,5 +1,5 @@
 function mrg_ttide_to_mike(tidestruc, tidedata, outfname)
-% A function to output a .con file which is compatible with MIKE
+% Outputs a .con file which is compatible with MIKE.
 %
 % INPUT
 %   tidestruc   The struct returned by t_tide contining the harmonics,

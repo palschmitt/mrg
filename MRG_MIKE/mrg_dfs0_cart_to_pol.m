@@ -1,6 +1,5 @@
 function mrg_dfs0_cart_to_pol(curr_east,curr_north,wind)
-% A function to convert U and V velcity data into magnitude and direction
-% and output a DFS0 file.
+% Converts U and V velcity data into magnitude and direction.
 %
 % INPUT
 %   curr_east   A positive integer defining the column number for the U
@@ -48,7 +47,7 @@ function mrg_dfs0_cart_to_pol(curr_east,curr_north,wind)
 
 %% read data
 
-RecData = Read_dfs0;
+RecData = mrg_read_dfs0;
 
 %check defined data columns
 if curr_east > length(RecData.items(:,1))

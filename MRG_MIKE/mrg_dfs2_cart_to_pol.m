@@ -1,6 +1,5 @@
 function mrg_dfs2_cart_to_pol(curr_east,curr_north,wind)
-% A function to convert U and V velcity data into magnitude and direction
-% and output a DFS0 file.
+% Converts U and V velcity data into magnitude and direction.
 %
 % INPUT
 %   curr_east   A positive integer defining the column number for the U
@@ -32,25 +31,20 @@ function mrg_dfs2_cart_to_pol(curr_east,curr_north,wind)
 %   http://creativecommons.org/licenses/by-sa/3.0/
 %
 % DEVELOPMENT
-%   v 1.2   2012-09-12
+%   v 1.0   2012-09-12
 %           DP. Inital attempt.  
 %
 % TODO
 %   Can we add descriptions to DFS2 files?  Ask for user input, a-la
 %   mrg_dfs0_car_to_pol?
 
-%  wind=1;curr_east=1;curr_north=2;
-
 %% Load libraries
-% a1 = mrg_load_DHI_assembs();
-NET.addAssembly('DHI.Generic.MikeZero.DFS');
-NET.addAssembly('DHI.Generic.MikeZero.EUM');
+NET.addAssembly('DHI.Generic.MikeZero');
+import DHI.Generic.MikeZero.*
 import DHI.Generic.MikeZero.DFS.*;
 import DHI.Generic.MikeZero.DFS.dfs123.*;
-import DHI.Generic.MikeZero.*
 
 %% Get file and important info
-
 [file, path] = uigetfile('*.dfs2', 'Choose a DFS2 file to process');
 in_filename = [path,file];
 out_filename = [path,file(1:end-5),'_dir.dfs2'];

@@ -1,4 +1,6 @@
 function factory = mrg_effing_factory()
+% Load the f**king factory.
+%
 % A function to generate the factory object required in a number of MIKE
 % toolbox examples.  Should prevent errors in functions.  
 %

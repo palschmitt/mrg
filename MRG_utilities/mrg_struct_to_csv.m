@@ -1,4 +1,4 @@
-function mrg_struct_2_csv(in, outfile)
+function mrg_struct_to_csv(in, outfile)
 % A function to output a structure to csv.  Currently can only deal with a
 % limited number of data types, and only deals with 'square' structures.
 %
@@ -21,7 +21,7 @@ function mrg_struct_2_csv(in, outfile)
 %           DP.  Documentation.   
 %
 % TODO
-%   Catch input.  Prompt user for filesname if not present.  
+%   Catch input.  Prompt user for filename if not present.  
 
 %% Go
 if ~isstruct(in)

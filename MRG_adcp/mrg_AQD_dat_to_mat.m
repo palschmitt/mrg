@@ -1,12 +1,14 @@
-function [AQDdat_mat_out] = mrg_AQDdat2mat(filename, n_header_items)
-% Reads .dat files from the AquaDopp
-% Outputs a structuered array containing the data.
+function [AQDdat_mat_out] = mrg_AQD_dat_to_mat(filename, n_header_items)
+% Reads .dat files from the Aquadopp
+% Outputs a structured array containing the data.
 %   TODO:
 %       Add compass correction (have as input)
 %       Add pressure correction (also as input)
 %       Allow header items as input (currently hard-coded below)
 %       Allow side-lobe depth correction as an input (also hard-coded
 %       below)
+%       Optimise / speed up!
+%       Deal with testing for equidistances
 %   V2 DP 4/7/2012
 %       - Removed all reference to the 'arbitary' percentage of the water
 %       column cut-off (which is totally bollocks).  The correct number is
@@ -18,20 +20,20 @@ function [AQDdat_mat_out] = mrg_AQDdat2mat(filename, n_header_items)
 
 % Check that the supplied file exists
 if ~exist(filename, 'file')
-    error('The filename you passed to mrg_AQDdat2mat does not exists, or is not accessible by MATLAB');
+    error(['The filename you passed to ' mfilename ' does not exists, or is not accessible by MATLAB']);
 end
 
 % The number of header items (find this in the AquaDopp .hdr file).
 if ~exist('n_header_items', 'var')
     n_header_items = 19;
-    warning('mrgAQDdat2mat:nineteenheaders', 'The function mrg_AQDdat2mat is assuming you have 19 header items');
+    warning('mrg:DefaultValue', ['The function ' mfilename ' is assuming you have 19 header items']);
 end
 
 %% Try to open a file connection
 fid = fopen(filename, 'r');
 % Check that the file was opened
 if fid == -1
-    error('MATLAB was unable to open the file supplied to mrg_AQDdat2mat');
+    error(['MATLAB was unable to open the file supplied to ' mfilename]);
 end
 
 %% Check compass correction input
@@ -87,12 +89,11 @@ fclose(fid);
 datevector = cell2mat(AQDdat_raw_meta(:,[3,1,2,4,5,6]));
 datetime = datenum(double(datevector));
 % Looking for double ups in datetimes...
-% This is probably cause by the wavebursts (profiles can't be taken while
+% This is probably caused by the wavebursts (profiles can't be taken while
 % the wavebursts are underway)
 % The ASCII output function of AquaPro seems to just duplicate the next 'good' profile to fill the gap. 
-% e.g. if 17:15 is missing, there will be two (identical) readings for 17:30.
+% e.g. if 1715 is missing, there will be two (identical) readings for 1730.
 [~, m, ~] = unique(datetime, 'last');
-num_doubles = length(AQDdat_mat)-length(m);
 
 % Dropping double ups before processing...
 datetime = datetime(m);

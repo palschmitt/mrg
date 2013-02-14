@@ -1,43 +1,52 @@
-function [data] = dfsu_stats(chunk_size)
-%% A function to calculate some basic statistics from objects in DFSU files.  
-% It performs calculations from each cell in a DFSU file (i.e. an analysis through the
-% time domain).  Currently it calculates:
-    % - mean (using nanmean, i.e. ignoring delete values)
-    % - median (using nanmedian, i.e. ignoring delete values)
-    % - standard deviation (using nanstd. Uses n-1 as the denominator)
-    % - nanmin (using nanmin)
-    % - nanmax (using nanmax)
-    % - n (ignoring nans)
-    % - n_total (including nans - should be equal to number of timesteps)
-    %
-    % Input:
-    % chunk_size = An integer specifying the size of the 'chunks' to break the
-    %   file up into.  Larger chunks may speed up runtime, but very large
-    %   chunks may lead to out of memory errors.  Defaults to 1000.
-    %
-    % Output:
-    % A MATLAB structure with 10 items: X, Y and Z data from the DFSU file plus the 7 statistics calculated.  
-    % A CSV file, derived from the MATLAB structure.
-    % A DFSU file with the same spatial extent as the analysed file, but 
-    %   with a single timestep will be written as 'inputfilename_itemselected_stats.dfsu'.
-    % 
-    % Requirements (i.e. must be available in your path): 
-    % The DHI/MIKE Matlab toolbox 2011 (developed with v. 20110304)
-    % Dan's 'struc2csv.m' function (assuming you want csv output, else it will be skipped)
-    %
-% Created by Daniel Prtichard (www.pritchard.co)
-% Distributed under a creative commons CC BY-SA licence.  See here:
-% http://creativecommons.org/licenses/by-sa/3.0/
+function [data] = mrg_dfsu_stats(chunk_size)
+% Calculates some basic statistics from objects in DFSU files.  
 %
-% v 1.0 - DP. 12/7/2012
-%       - Initial attempt and distribution. 
-% v 1.2 - DP. 19/7/2012
-%       - Now deals with delete values by using single() throughout (use of
-%       double() causes issues with rounding).
-%       - Much better estimation of time remaining.
+% INPUT
+%   chunk_size      An integer specifying the size of the 'chunks' to break 
+%                   the file up into.  Larger chunks may speed up runtime, 
+%                   but very large chunks may lead to out of memory errors.  
+%                   Defaults to 1000.
+%
+% OUTPUT
+%   Returns a MATLAB structure with 10 items: X, Y and Z data from the DFSU
+%   file plus the 7 statistics calculated.
+%   Writes a CSV file, derived from the MATLAB structure.
+%   Writes a DFSU file with the same spatial extent as the analysed file,
+%   but with a single timestep will be written as
+%   'inputfilename_itemselected_stats.dfsu'.
+%
+% REQUIREMENTS
+%   The DHI/MIKE Matlab toolbox 2011 (developed with v. 20110304)
+%   mrg_struct_to_csv.m function (assuming you want csv output, else it will be skipped)
+%
+% NOTES
+%   The function performs calculations from each cell in a DFSU file (i.e.
+%   an analysis through the time domain). Currently it calculates:
+%       - mean (using nanmean, i.e. ignoring delete values)
+%       - median (using nanmedian, i.e. ignoring delete values)
+%       - standard deviation (using nanstd. Uses n-1 as the denominator)
+%       - nanmin (using nanmin)
+%       - nanmax (using nanmax)
+%       - n (ignoring nans)
+%       - n_total (including nans - should be equal to number of timesteps)
+%
+% LICENCE
+%   Created by Daniel Pritchard (www.pritchard.co)
+%   Distributed under a creative commons CC BY-SA licence. See here:
+%   http://creativecommons.org/licenses/by-sa/3.0/
+%
+% DEVELOPMENT
+%   v 1.0   12/7/2012
+%           DP. Initial attempt and distribution. 
+%   v 1.2   19/7/2012
+%           DP. Now deals with delete values by using single() throughout 
+%           (use of double() causes issues with rounding).
+%           DP. Much better estimation of time remaining.
+%   v 1.3   14/02/2013
+%           DP. Documentation.
 
-%%
-% Chunk size...
+%% Go!
+%Chunk size...
 if ~exist('chunk_size', 'var')
     chunk_size = 1000;
 end
@@ -99,7 +108,7 @@ data.ntotal = NaN(1,nelements, 'single');
 % Pre-allocate some memory, and setup our sequence...
 temp_single_ts = NaN(1,nelements,'single');
 temp_el_chunk = NaN(chunk_size,nsteps,'single');
-seq = int32([1:chunk_size:nelements]);
+seq = int32(1:chunk_size:nelements);
 seq_len = size(seq,2);
 seq(end+1) = int32(nelements);
 
@@ -179,14 +188,14 @@ for j=1:seq_len
 end
 
 %% Here we write out a CSV file
-if exist('struc2csv.m', 'file') == 2
+if exist('mrg_struct_to_csv.m', 'file') == 2
     disp('Writing statistics to a CSV file.')
     out_file = [filename(1:end-5),'_',regexprep(items{choice,1},' ',''),'_stats.csv'];
     out_file_full = [filepath,out_file];
-    struc2csv(data, out_file_full);
+    mrg_struct_to_csv(data, out_file_full);
     disp(['Output CSV file (', out_file, ') written successfully.'])
 else
-    disp('struc2csv.m not avilable in your search path.  No CSV file will be generated.')
+    disp('mrg_struct_to_csv.m not avilable in your search path.  No CSV file will be generated.')
 end
 
 %% Here we  stick data into a DFSU file
@@ -194,12 +203,11 @@ end
 disp('Writing statistics to a DFSU file.')
 
 % Apparently we need to load these again...  Hmmm... TODO: Figure this out
-NET.addAssembly('DHI.Generic.MikeZero.DFS');
-NET.addAssembly('DHI.Generic.MikeZero.EUM');
-import DHI.Generic.MikeZero.DFS.*;
-import DHI.Generic.MikeZero.DFS.dfsu.*;
+NET.addAssembly('DHI.Generic.MikeZero');
 import DHI.Generic.MikeZero.*
 import DHI.Generic.MikeZero.EUM.*
+import DHI.Generic.MikeZero.DFS.*;
+import DHI.Generic.MikeZero.DFS.dfsu.*;
 
 builder = DfsuBuilder.Create(DfsuFileType.Dfsu2D);
 builder.SetTimeInfo(dfsu_file.StartDateTime, 1);

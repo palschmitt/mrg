@@ -1,5 +1,6 @@
 function mrg_dfs2_to_radians(item_no, filename)
-% A function to convert directions in a dfs2 file to radians.
+% Convert directions in a dfs2 file to radians.
+%
 % INPUT
 %   item_no     An non-zero integer specifying the item in the DFS2 file
 %               containing the direction data.
@@ -11,10 +12,25 @@ function mrg_dfs2_to_radians(item_no, filename)
 %   'item_no' to radians.  It creates a DFS2 file with '_radians' 
 %   appended to the filename.
 %
+% NOTES
+%   Created to address a bug in the DHI software which has now been fixed.
+%
+% REQUIREMENTS
+%   The DHI/MIKE Matlab toolbox 2011 (developed with v. 20110304)
+%
+% LICENCE
+%   Created by Daniel Pritchard (www.pritchard.co)
+%   Distributed under a creative commons CC BY-SA licence. See here:
+%   http://creativecommons.org/licenses/by-sa/3.0/
+%
+% DEVELOPMENT
+%   v 1.0   2012
+%           DP. Initial attempt and distribution. 
+%   v 1.1   14/02/2013
+%           DP. Documentation. 
 % TODO 
-%   Documentation
 %   Better parsing of input number.  Optional select of input item.
-%   Do something about delete value handelling.  At the moment they are not
+%   Do something about delete value handeling.  At the moment they are not
 %       handeled at all, which is OK for ERA data only...
 
 %% Load libraries

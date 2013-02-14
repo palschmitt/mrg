@@ -1,6 +1,7 @@
 function data_out = mrg_read_WRII_ascii(path,fnames)
-% A function to read ASCII files from WinRiver II.  Assumes a VERY specific
-% output format as produced by the mrg_enu_v4.ttf ASCII template.
+% A function to read ASCII files from WinRiver II. 
+% Assumes a VERY specific output format as produced by the 
+% mrg_enu_v4.ttf ASCII template.
 %
 % USAGE
 %   [fnames, path] = uigetfile('.txt', 'Select ASCII text files to process', 'MultiSelect', 'on');

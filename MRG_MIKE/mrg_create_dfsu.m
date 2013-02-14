@@ -1,6 +1,5 @@
 function mrg_create_dfsu(start_date, ntimesteps, timestep_sec, varargin)
 % Takes a mesh file and produces a DFSU file filled with very simple data.
-% See NOTES.
 %
 % INPUT
 %   start_date      A date vector (e.g. [2012, 12, 01, 23, 35, 00] specifying
@@ -47,7 +46,7 @@ function mrg_create_dfsu(start_date, ntimesteps, timestep_sec, varargin)
 %   mrg_effing_factory from the MRG_MIKE_toolbox
 %
 % LICENCE
-%   Created by Daniel Prtichard (www.pritchard.co)
+%   Created by Daniel Pritchard (www.pritchard.co)
 %   Distributed under a creative commons CC BY-SA licence.  See here:
 %   http://creativecommons.org/licenses/by-sa/3.0/
 %
@@ -100,18 +99,17 @@ end
 
 % Input checks
 if ~(isnumeric(start_date)&&length(start_date)==6);
-    error('mrg_create_dfsu:InputFail','start_date must be date vector!');
+    error('mrg:InputFail','start_date must be date vector!');
 end
 
 if ~isnumeric(increment)
-    error('mrg_create_dfsu:InputFail','increment must be a number!');
+    error('mrg:InputFail','increment must be a number!');
 end
 %%
-NET.addAssembly('DHI.Generic.MikeZero.DFS');
-NET.addAssembly('DHI.Generic.MikeZero.EUM');
+NET.addAssembly('DHI.Generic.MikeZero');
+import DHI.Generic.MikeZero.*
 import DHI.Generic.MikeZero.DFS.*;
 import DHI.Generic.MikeZero.DFS.dfsu.*;
-import DHI.Generic.MikeZero.*
 
 %% Get mesh
 return_path = cd;

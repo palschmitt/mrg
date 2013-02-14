@@ -1,5 +1,12 @@
 function mrg_create_npp_langdef()
-%% Creates a language definition file for NotePad++ from some template files.  
+% Creates a language definition file for NotePad++ from some template files.
+% 
+% Requires userDefineLang_PFS_Template.xml, pfs_static_list.txt and 
+% pfs_variable_list.txt which can be found in Dans MIKE PFS respository:
+% https://github.com/dpritchard/mike_pfs_npp
+% 
+% All that being said, you may as well just get the generated XML from the
+% above link!
 
 %% Get the Template
 % We assume the files with the lists are in same directory
@@ -12,7 +19,6 @@ fclose(fileID);
 s = s{1};
 
 %% Static Items
-%[file, path] = uigetfile('.txt', 'Get Static List');
 fileID = fopen('pfs_static_list.txt');
 static_items = textscan(fileID,'%s', 'Delimiter', '\n');
 fclose(fileID);
