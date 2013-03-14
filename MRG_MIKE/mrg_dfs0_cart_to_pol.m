@@ -1,5 +1,5 @@
 function mrg_dfs0_cart_to_pol(curr_east,curr_north,wind)
-% Converts U and V velcity data into magnitude and direction.
+% Converts U and V velcity data into magnitude and direction in a DFSO file
 %
 % INPUT
 %   curr_east   A positive integer defining the column number for the U
@@ -70,7 +70,6 @@ data = RecData.dData(:,[curr_east curr_north]);
 % matlab polar coodinates are orientated against the clock and start at
 % East with zero, this is taken care of by swapping x,y in the function
 % (output)
-
 [new_data(:,1),new_data(:,2)] = cart2pol(data(:,2),data(:,1));
 
 if wind
