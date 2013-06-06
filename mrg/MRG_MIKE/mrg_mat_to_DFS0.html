@@ -1,0 +1,211 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of mrg_mat_to_DFS0</title>
+  <meta name="keywords" content="mrg_mat_to_DFS0">
+  <meta name="description" content="Process MATLAB data to a DFS0 file.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../index.html">Home</a> &gt;  <a href="#">mrg</a> &gt; <a href="index.html">MRG_MIKE</a> &gt; mrg_mat_to_DFS0.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../index.html"><img alt="<" border="0" src="../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for mrg\MRG_MIKE&nbsp;<img alt=">" border="0" src="../../right.png"></a></td></tr></table>-->
+
+<h1>mrg_mat_to_DFS0
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>Process MATLAB data to a DFS0 file.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function mrg_mat_to_DFS0(padded_struct, datetime_name, variables) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> Process MATLAB data to a DFS0 file.
+ 
+ INPUT
+   padded_struct   A MATLAB structure with an equidistant timestep
+   datetime        A string which identified the MATLAB datenum object in the
+                   structure
+   variables       A cell array containing strings which identify the
+                   objects in the structure to write to the DFS0 file
+
+ OUTPUT
+   NO OUTPUT AT CONSOLE
+   Outputs a DFS0 file
+
+ REQUIREMENTS
+   Requires the MIKE Matlab toolbox.  Tested with v. 20110304.
+
+ LICENCE
+   Created by Daniel Pritchard (www.pritchard.co)
+   Distributed under a creative commons CC BY-SA licence. See here:
+   http://creativecommons.org/licenses/by-sa/3.0/
+
+ DEVELOPMENT
+   v 1.1   Unknown
+           DP. Inital attempt.  
+   v 1.2   04/11/11 
+           DP. Modifications to make it more generic.
+   v 1.3   14/02/2013
+           DP. Documentation!</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../mrg/MRG_adcp/mrg_son_to_mat.html" class="code" title="function [sontek_struc] = mrg_son_to_mat(seabedtosen, blankdist, cellsize, varargin)">mrg_son_to_mat</a>	TODO: Documentation</li></ul>
+<!-- crossreference -->
+
+<h2><a name="_subfunctions"></a>SUBFUNCTIONS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="#_sub1" class="code">function datetime_name = get_dt_name(padded_struct)</a></li></ul>
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function mrg_mat_to_DFS0(padded_struct, datetime_name, variables)</a>
+0002 <span class="comment">% Process MATLAB data to a DFS0 file.</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% INPUT</span>
+0005 <span class="comment">%   padded_struct   A MATLAB structure with an equidistant timestep</span>
+0006 <span class="comment">%   datetime        A string which identified the MATLAB datenum object in the</span>
+0007 <span class="comment">%                   structure</span>
+0008 <span class="comment">%   variables       A cell array containing strings which identify the</span>
+0009 <span class="comment">%                   objects in the structure to write to the DFS0 file</span>
+0010 <span class="comment">%</span>
+0011 <span class="comment">% OUTPUT</span>
+0012 <span class="comment">%   NO OUTPUT AT CONSOLE</span>
+0013 <span class="comment">%   Outputs a DFS0 file</span>
+0014 <span class="comment">%</span>
+0015 <span class="comment">% REQUIREMENTS</span>
+0016 <span class="comment">%   Requires the MIKE Matlab toolbox.  Tested with v. 20110304.</span>
+0017 <span class="comment">%</span>
+0018 <span class="comment">% LICENCE</span>
+0019 <span class="comment">%   Created by Daniel Pritchard (www.pritchard.co)</span>
+0020 <span class="comment">%   Distributed under a creative commons CC BY-SA licence. See here:</span>
+0021 <span class="comment">%   http://creativecommons.org/licenses/by-sa/3.0/</span>
+0022 <span class="comment">%</span>
+0023 <span class="comment">% DEVELOPMENT</span>
+0024 <span class="comment">%   v 1.1   Unknown</span>
+0025 <span class="comment">%           DP. Inital attempt.</span>
+0026 <span class="comment">%   v 1.2   04/11/11</span>
+0027 <span class="comment">%           DP. Modifications to make it more generic.</span>
+0028 <span class="comment">%   v 1.3   14/02/2013</span>
+0029 <span class="comment">%           DP. Documentation!</span>
+0030 
+0031 <span class="comment">%% Is the input a structured array</span>
+0032 <span class="keyword">if</span> ~isstruct(padded_struct)
+0033     error(<span class="string">'You must provide a MATLAB structured array'</span>)
+0034 <span class="keyword">end</span>
+0035 
+0036 <span class="comment">%% Is a datetime name supplied?  If not, get one.</span>
+0037 <span class="keyword">if</span> ~exist(<span class="string">'datetime_name'</span>, <span class="string">'var'</span>)
+0038     datetime_name = <a href="#_sub1" class="code" title="subfunction datetime_name = get_dt_name(padded_struct)">get_dt_name</a>(padded_struct);
+0039 <span class="keyword">elseif</span> ~ischar(datetime_name)
+0040     error(<span class="string">'The datetime_name must be a string'</span>);
+0041 <span class="keyword">end</span>
+0042 
+0043 <span class="comment">%% Is variables supplied?  If not error</span>
+0044 <span class="keyword">if</span> ~exist(<span class="string">'variables'</span>, <span class="string">'var'</span>) 
+0045     error(<span class="string">'You did not supply any variables.'</span>);
+0046 <span class="keyword">end</span>
+0047 
+0048 <span class="comment">%% Is it a cell array</span>
+0049 <span class="keyword">if</span> ~iscell(variables)
+0050     error(<span class="string">'The variables must be suppled as a MATLAB cell array.'</span>);
+0051 <span class="keyword">end</span>
+0052 
+0053 <span class="comment">%% Are all the variables there?</span>
+0054 <span class="keyword">if</span> any(~isfield(padded_struct, variables))
+0055     error(<span class="string">'Some of the expected variables are missing from the supplied structured array'</span>);
+0056 <span class="keyword">end</span>
+0057 
+0058 <span class="comment">%% Check all variables the same length?</span>
+0059 
+0060 <span class="comment">%% Checks on the datetime variable</span>
+0061 datetime = padded_struct.(datetime_name);
+0062 <span class="comment">% Are there 2 dimentions?</span>
+0063 dt_dims = ndims(datetime);
+0064 <span class="keyword">if</span> dt_dims ~= 2
+0065     error(<span class="string">'The datetime object does not have 2 dimensions.'</span>);
+0066 <span class="keyword">end</span>
+0067 
+0068 <span class="comment">% Put the longest dimension first</span>
+0069 <span class="keyword">if</span> size(datetime,1) &lt; size(datetime,2)
+0070     datetime = datetime.';
+0071 <span class="keyword">end</span>
+0072 
+0073 <span class="comment">%% Are the time steps equidistant?  If so then setup the MIKE timestep</span>
+0074 <span class="comment">% Check time step for equidistant spacing</span>
+0075 timestep = round((datetime(2) - datetime(1))*24*60);
+0076 t_steps = diff(datetime)*24*60;
+0077 
+0078 <span class="keyword">if</span> any(abs(t_steps - timestep)&gt;=1/60)
+0079     error(<span class="string">'Timestep is not equidistant in file!'</span>);
+0080 <span class="keyword">end</span>
+0081 
+0082 <span class="comment">%% Setup variables to describe the DFS0 file</span>
+0083 <span class="comment">% Temporal dimension information</span>
+0084 start_date = datevec(min(datetime));
+0085 <span class="comment">% NB: 'timestep' assigned above</span>
+0086 
+0087 <span class="comment">%% OK - Where do we save the DFS0 file?</span>
+0088 [dfs_name,dfs_path] = uiputfile(<span class="string">'*.dfs0'</span>,<span class="string">'Choose a name for the .dfs0 file'</span>);
+0089 cd(dfs_path)
+0090 
+0091 <span class="comment">%% Here after this is just copied from DHI example...</span>
+0092 <span class="comment">% Load libraries</span>
+0093 assemb = NET.addAssembly(<span class="string">'DHI.Generic.MikeZero'</span>);
+0094 import DHI.Generic.MikeZero.*
+0095 import DHI.Generic.MikeZero.DFS.*;
+0096 import DHI.Generic.MikeZero.DFS.dfs123.*;
+0097 
+0098 <span class="comment">% Create an empty dfs0 file object</span>
+0099 dfs0 = dfsTSO(dfs_name,1);
+0100 
+0101 set(dfs0,<span class="string">'filetitle'</span>,<span class="string">'Data from MATLAB'</span>);
+0102 set(dfs0,<span class="string">'startdate'</span>,double([start_date(1), start_date(2), start_date(3), start_date(4), start_date(5), start_date(6)]));
+0103 set(dfs0,<span class="string">'timestep'</span>,[0 0 0 0 0 timestep]);
+0104 addTimesteps(dfs0,length(datetime));
+0105 
+0106 <span class="comment">% 1 dbar = 0.1 bar = 10 kPa</span>
+0107 <span class="comment">% 1 mbar = 0.001 bar = 0.1 kPa = 1 hPa (hectopascal)</span>
+0108 <span class="comment">% 1 dbar = 100 hPa</span>
+0109 
+0110 <span class="keyword">for</span> n = 1:length(variables)
+0111     addItem(dfs0,variables{n});
+0112 <span class="keyword">end</span>
+0113 
+0114 <span class="keyword">for</span> j=1:length(variables)
+0115     var = variables{j};
+0116     dfs0(j) = single(padded_struct.(var));
+0117 <span class="keyword">end</span>
+0118 
+0119 save(dfs0);
+0120 close(dfs0);
+0121 <span class="comment">% DFS0 writing complete!</span>
+0122 
+0123 <span class="comment">%% Begin nested functions for mat2DFS0 function...</span>
+0124     <a name="_sub1" href="#_subfunctions" class="code">function datetime_name = get_dt_name(padded_struct)</a>
+0125         gdn_names = fieldnames(padded_struct);
+0126         gdn_options = gdn_names;
+0127         gdn_options{end+1} = <span class="string">'None of the above!'</span>;
+0128         gdn_choice = menu(sprintf(<span class="string">'Which object contains the MATLAB datetime information?'</span>),gdn_options);
+0129         <span class="keyword">if</span> strcmp(gdn_options(gdn_choice), <span class="string">'None of the above!'</span>)
+0130             error(<span class="string">'No, that is not an option'</span>);
+0131         <span class="keyword">else</span>
+0132             datetime_name = char(gdn_names(gdn_choice));
+0133         <span class="keyword">end</span>
+0134     <span class="keyword">end</span>
+0135 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Thu 06-Jun-2013 11:05:07 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

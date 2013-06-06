@@ -1,0 +1,238 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of mrg_read_dfs0</title>
+  <meta name="keywords" content="mrg_read_dfs0">
+  <meta name="description" content="Read all entries from a DFS0 file.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../index.html">Home</a> &gt;  <a href="#">mrg</a> &gt; <a href="index.html">MRG_MIKE</a> &gt; mrg_read_dfs0.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../index.html"><img alt="<" border="0" src="../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for mrg\MRG_MIKE&nbsp;<img alt=">" border="0" src="../../right.png"></a></td></tr></table>-->
+
+<h1>mrg_read_dfs0
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>Read all entries from a DFS0 file.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function RecData = mrg_read_dfs0(varargin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> Read all entries from a DFS0 file.
+
+ INPUT
+   ...         An optional charater string specifying the file name (or
+               full file path) to read.
+
+ OUTPUT
+   RecData     A structure with all data and useful information.
+
+ REQUIREMENTS
+   Requires the MIKE Matlab toolbox.  Tested with v. 20110304
+
+ LICENCE
+   Created B. Elsaesser @ RPS Consulting Engineers
+   Updated by Daniel Pritchard (www.pritchard.co)
+   Original copyright B. Elsaesser.  Rewritten code distributed under a
+   creative commons CC BY-SA licence. See here:
+   http://creativecommons.org/licenses/by-sa/3.0/
+
+ DEVELOPMENT
+   v 1.0   2004-11
+           First version. BE
+   v 1.1   2005-09
+           Updated. BE
+   v 1.2   2007-01
+           Time &amp; date of data added to file structure. BE
+           Converted to proper function. BE
+   v 1.3   2009-09
+           Revised to work with Mike 2009 using latest Matlab toolbox. BE
+   v 1.4   2012-09-05
+           Full code re-write with backwards compatability. DP
+           Compatible with MIKE 2011 and 20110304 toolbox. DP
+           Uses Dfs0Util (from the MIKE toolbox). DP
+           Standard info returned with self-expanatory fieldnames. DP
+           The 'items' field is not 100% backwards compatible (yet). DP
+   v 1.5   Added ability to return useful time info from NonEqudistant
+           files.  DP
+
+ TODO
+   Although the actual data reading (via Dfs0Util) is faster, this code
+   is slower overall than the orignal Read_dfs0.  This might be
+   unavoidable due to extra data extracted, but maybe it can be optimised
+   a bit...
+   Full backwards compatability on items{}</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="mrg_dfs0_cart_to_pol.html" class="code" title="function mrg_dfs0_cart_to_pol(curr_east,curr_north,wind)">mrg_dfs0_cart_to_pol</a>	Converts U and V velcity data into magnitude and direction in a DFSO file</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function RecData = mrg_read_dfs0(varargin)</a>
+0002 <span class="comment">% Read all entries from a DFS0 file.</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% INPUT</span>
+0005 <span class="comment">%   ...         An optional charater string specifying the file name (or</span>
+0006 <span class="comment">%               full file path) to read.</span>
+0007 <span class="comment">%</span>
+0008 <span class="comment">% OUTPUT</span>
+0009 <span class="comment">%   RecData     A structure with all data and useful information.</span>
+0010 <span class="comment">%</span>
+0011 <span class="comment">% REQUIREMENTS</span>
+0012 <span class="comment">%   Requires the MIKE Matlab toolbox.  Tested with v. 20110304</span>
+0013 <span class="comment">%</span>
+0014 <span class="comment">% LICENCE</span>
+0015 <span class="comment">%   Created B. Elsaesser @ RPS Consulting Engineers</span>
+0016 <span class="comment">%   Updated by Daniel Pritchard (www.pritchard.co)</span>
+0017 <span class="comment">%   Original copyright B. Elsaesser.  Rewritten code distributed under a</span>
+0018 <span class="comment">%   creative commons CC BY-SA licence. See here:</span>
+0019 <span class="comment">%   http://creativecommons.org/licenses/by-sa/3.0/</span>
+0020 <span class="comment">%</span>
+0021 <span class="comment">% DEVELOPMENT</span>
+0022 <span class="comment">%   v 1.0   2004-11</span>
+0023 <span class="comment">%           First version. BE</span>
+0024 <span class="comment">%   v 1.1   2005-09</span>
+0025 <span class="comment">%           Updated. BE</span>
+0026 <span class="comment">%   v 1.2   2007-01</span>
+0027 <span class="comment">%           Time &amp; date of data added to file structure. BE</span>
+0028 <span class="comment">%           Converted to proper function. BE</span>
+0029 <span class="comment">%   v 1.3   2009-09</span>
+0030 <span class="comment">%           Revised to work with Mike 2009 using latest Matlab toolbox. BE</span>
+0031 <span class="comment">%   v 1.4   2012-09-05</span>
+0032 <span class="comment">%           Full code re-write with backwards compatability. DP</span>
+0033 <span class="comment">%           Compatible with MIKE 2011 and 20110304 toolbox. DP</span>
+0034 <span class="comment">%           Uses Dfs0Util (from the MIKE toolbox). DP</span>
+0035 <span class="comment">%           Standard info returned with self-expanatory fieldnames. DP</span>
+0036 <span class="comment">%           The 'items' field is not 100% backwards compatible (yet). DP</span>
+0037 <span class="comment">%   v 1.5   Added ability to return useful time info from NonEqudistant</span>
+0038 <span class="comment">%           files.  DP</span>
+0039 <span class="comment">%</span>
+0040 <span class="comment">% TODO</span>
+0041 <span class="comment">%   Although the actual data reading (via Dfs0Util) is faster, this code</span>
+0042 <span class="comment">%   is slower overall than the orignal Read_dfs0.  This might be</span>
+0043 <span class="comment">%   unavoidable due to extra data extracted, but maybe it can be optimised</span>
+0044 <span class="comment">%   a bit...</span>
+0045 <span class="comment">%   Full backwards compatability on items{}</span>
+0046 
+0047 <span class="comment">%%</span>
+0048 NET.addAssembly(<span class="string">'DHI.Generic.MikeZero.DFS'</span>);
+0049 import DHI.Generic.MikeZero.DFS.*;
+0050 import DHI.Generic.MikeZero.DFS.dfs0.*;
+0051 
+0052 <span class="comment">%% Open File</span>
+0053 <span class="keyword">if</span> isempty(varargin)
+0054     [fname,path] = uigetfile(<span class="string">'*.dfs0'</span>,<span class="string">'Select the .dfs0'</span>);
+0055     name = [path,fname];
+0056 <span class="keyword">elseif</span> (~exist(char(varargin),<span class="string">'file'</span>))
+0057     warning([mfilename, <span class="string">':filenotfound'</span>], <span class="string">'The file you supplied was not found.'</span>)
+0058     [fname,path] = uigetfile(<span class="string">'*.dfs0'</span>,<span class="string">'Select the .dfs0'</span>);
+0059     name = [path,fname];
+0060 <span class="keyword">else</span>
+0061     name = char(varargin);
+0062 <span class="keyword">end</span>
+0063 
+0064 dfs0File  = DfsFileFactory.DfsGenericOpen(name);
+0065 
+0066 <span class="comment">%% Read times and data for all items</span>
+0067 <span class="comment">% Use the Dfs0Util for bulk-reading all data and timesteps</span>
+0068 dd = single(Dfs0Util.ReadDfs0DataDouble(dfs0File));
+0069 t = dd(:,1);
+0070 data = dd(:,2:end);
+0071 
+0072 <span class="comment">%% Sort out time data</span>
+0073 <span class="keyword">try</span>
+0074     start_date_vec = [dfs0File.FileInfo.TimeAxis.StartDateTime.Year, <span class="keyword">...</span>
+0075         dfs0File.FileInfo.TimeAxis.StartDateTime.Month, <span class="keyword">...</span>
+0076         dfs0File.FileInfo.TimeAxis.StartDateTime.Day, <span class="keyword">...</span>
+0077         dfs0File.FileInfo.TimeAxis.StartDateTime.Hour, <span class="keyword">...</span>
+0078         dfs0File.FileInfo.TimeAxis.StartDateTime.Minute, <span class="keyword">...</span>
+0079         dfs0File.FileInfo.TimeAxis.StartDateTime.Second];
+0080 <span class="keyword">catch</span> err
+0081     disp(err.message);
+0082     warning([mfilename, <span class="string">':startdatefail'</span>], <span class="string">'Start date could not be determined from the DFS0 file.  Using 0000-00-00 00:00:00.'</span>)
+0083     start_date_vec = [0,0,0,0,0,0];
+0084 <span class="keyword">end</span>
+0085 
+0086 start_date_num = datenum(double(start_date_vec));
+0087 
+0088 <span class="comment">%% Read item information</span>
+0089 items = cell(dfs0File.ItemInfo.Count, 3);
+0090 <span class="keyword">for</span> i = 0:dfs0File.ItemInfo.Count-1
+0091    item = dfs0File.ItemInfo.Item(i);
+0092    items{i+1,1} = char(item.Name);
+0093    items{i+1,2} = char(item.Quantity.Unit);
+0094    items{i+1,3} = char(item.Quantity.UnitAbbreviation); 
+0095 <span class="keyword">end</span>
+0096 
+0097 <span class="comment">%% Construct the output</span>
+0098 RecData = struct();
+0099 
+0100 RecData.dData = data;
+0101 
+0102 <span class="comment">% For compatability with old code:</span>
+0103 RecData.dTime = NaN(1,4);
+0104 RecData.dTime(1) = dfs0File.FileInfo.TimeAxis.NumberOfTimeSteps;
+0105 <span class="keyword">try</span>
+0106     RecData.dTime(2) = dfs0File.FileInfo.TimeAxis.TimeStep;
+0107 <span class="keyword">catch</span> err
+0108     disp(err.message);
+0109     warning([mfilename, <span class="string">':timestepfail'</span>], <span class="string">'Timestep length could not be determined from the DFS0 file.  Using NaN.'</span>)
+0110     RecData.dTime(2) = NaN;
+0111 <span class="keyword">end</span>
+0112 RecData.dTime(3) = RecData.dTime(2)/(60*60*24);
+0113 RecData.dTime(4) = start_date_num;
+0114 nameinfo = regexp(char(dfs0File.FileInfo.FileName),<span class="string">'\\'</span>,<span class="string">'split'</span>);
+0115 RecData.name = char(nameinfo(end));
+0116 RecData.title = char(dfs0File.FileInfo.FileTitle);
+0117 RecData.DeleteFloat = single(dfs0File.FileInfo.DeleteValueFloat);
+0118 
+0119 <span class="comment">% Future proof returning of data</span>
+0120 <span class="comment">% Removes abiguity on the meaning of 'dTime'</span>
+0121 <span class="comment">% Adds additional info</span>
+0122 RecData.NumberOfTimeSteps = dfs0File.FileInfo.TimeAxis.NumberOfTimeSteps;
+0123 RecData.TimeStepSec = RecData.dTime(2);
+0124 RecData.TimeStepHour = RecData.dTime(2)/(60*60);
+0125 RecData.TimeStepMat = RecData.dTime(2)/(60*60*24);
+0126 RecData.StartDateNum = start_date_num;
+0127 RecData.StartDateVec = start_date_vec;
+0128 RecData.Fullname = char(dfs0File.FileInfo.FileName);
+0129 RecData.TimeAxisType = char(dfs0File.FileInfo.TimeAxis.TimeAxisType);
+0130 
+0131 <span class="comment">% If the file is a non-equidistant time axis, then build a timeaxis from</span>
+0132 <span class="comment">% the data</span>
+0133 <span class="keyword">if</span> ~isempty(strfind(RecData.TimeAxisType, <span class="string">'NonEquidistant'</span>))
+0134     <span class="keyword">if</span> strcmp(char(dfs0File.FileInfo.TimeAxis.TimeUnit), <span class="string">'eumUsec'</span>)
+0135         tmat = double(t)/60/60/24;
+0136         RecData.TimeAxis = RecData.StartDateNum+tmat;
+0137     <span class="keyword">else</span> 
+0138         warning([mfilename, <span class="string">':timeaxisbuildfail'</span>], <span class="string">'Tried to build a time axis for NonEquidistant, but failed becuase the timestep is not &quot;eumUsec&quot;.'</span>)
+0139     <span class="keyword">end</span>
+0140 <span class="keyword">end</span>
+0141 
+0142 <span class="comment">% 'items' is not (yet) strictly backwards compatible, as we are missing</span>
+0143 <span class="comment">% columns 4, 5 and 6 from Read_dfs0.m (Not sure what these columns are?!)</span>
+0144 RecData.items = items;
+0145 
+0146 dfs0File.Close();
+0147 
+0148</pre></div>
+<hr><address>Generated on Thu 06-Jun-2013 11:05:07 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

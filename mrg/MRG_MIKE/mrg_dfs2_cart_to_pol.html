@@ -1,0 +1,208 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of mrg_dfs2_cart_to_pol</title>
+  <meta name="keywords" content="mrg_dfs2_cart_to_pol">
+  <meta name="description" content="Converts U and V velcity data into magnitude and direction.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../index.html">Home</a> &gt;  <a href="#">mrg</a> &gt; <a href="index.html">MRG_MIKE</a> &gt; mrg_dfs2_cart_to_pol.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../index.html"><img alt="<" border="0" src="../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for mrg\MRG_MIKE&nbsp;<img alt=">" border="0" src="../../right.png"></a></td></tr></table>-->
+
+<h1>mrg_dfs2_cart_to_pol
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>Converts U and V velcity data into magnitude and direction.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function mrg_dfs2_cart_to_pol(curr_east,curr_north,wind) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> Converts U and V velcity data into magnitude and direction.
+
+ INPUT
+   curr_east   A positive integer defining the column number for the U
+               component in the DFS0 file.
+   curr_north  A positive integer defining the column number for the V 
+               component in the DFS0 file.
+   wind        Is either 1 if the input data is wind data, otherwise 0.  
+               See NOTES.
+ 
+ OUTPUT
+   NO OUTPUT AT CONSOLE
+   Produces a DFS2 file with '_dir' appended to the filename.
+   Resulting file contains ONLY the calculated speed and direction.  
+
+ REQUIREMENTS
+   Requires the MIKE Matlab toolbox.  Tested with v. 20110304.
+
+ NOTES
+   Wind directions are typically specifiy as the direction the wind is
+   *coming from*, whereas other directions (e.g. currents) are specified
+   as the direction they are *going to*.  The wind input allows for this,
+   and ensures wind directions are calcuated correctly.
+
+ LICENCE
+   Created B. Elsaesser (b.elsaesser@qub.ac.uk)
+   Updated by Daniel Pritchard (www.pritchard.co)
+   Original copyright B. Elsaesser.  Rewritten code distributed under a
+   creative commons CC BY-SA licence. See here:
+   http://creativecommons.org/licenses/by-sa/3.0/
+
+ DEVELOPMENT
+   v 1.0   2012-09-12
+           DP. Inital attempt.  
+
+ TODO
+   Can we add descriptions to DFS2 files?  Ask for user input, a-la
+   mrg_dfs0_car_to_pol?</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function mrg_dfs2_cart_to_pol(curr_east,curr_north,wind)</a>
+0002 <span class="comment">% Converts U and V velcity data into magnitude and direction.</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% INPUT</span>
+0005 <span class="comment">%   curr_east   A positive integer defining the column number for the U</span>
+0006 <span class="comment">%               component in the DFS0 file.</span>
+0007 <span class="comment">%   curr_north  A positive integer defining the column number for the V</span>
+0008 <span class="comment">%               component in the DFS0 file.</span>
+0009 <span class="comment">%   wind        Is either 1 if the input data is wind data, otherwise 0.</span>
+0010 <span class="comment">%               See NOTES.</span>
+0011 <span class="comment">%</span>
+0012 <span class="comment">% OUTPUT</span>
+0013 <span class="comment">%   NO OUTPUT AT CONSOLE</span>
+0014 <span class="comment">%   Produces a DFS2 file with '_dir' appended to the filename.</span>
+0015 <span class="comment">%   Resulting file contains ONLY the calculated speed and direction.</span>
+0016 <span class="comment">%</span>
+0017 <span class="comment">% REQUIREMENTS</span>
+0018 <span class="comment">%   Requires the MIKE Matlab toolbox.  Tested with v. 20110304.</span>
+0019 <span class="comment">%</span>
+0020 <span class="comment">% NOTES</span>
+0021 <span class="comment">%   Wind directions are typically specifiy as the direction the wind is</span>
+0022 <span class="comment">%   *coming from*, whereas other directions (e.g. currents) are specified</span>
+0023 <span class="comment">%   as the direction they are *going to*.  The wind input allows for this,</span>
+0024 <span class="comment">%   and ensures wind directions are calcuated correctly.</span>
+0025 <span class="comment">%</span>
+0026 <span class="comment">% LICENCE</span>
+0027 <span class="comment">%   Created B. Elsaesser (b.elsaesser@qub.ac.uk)</span>
+0028 <span class="comment">%   Updated by Daniel Pritchard (www.pritchard.co)</span>
+0029 <span class="comment">%   Original copyright B. Elsaesser.  Rewritten code distributed under a</span>
+0030 <span class="comment">%   creative commons CC BY-SA licence. See here:</span>
+0031 <span class="comment">%   http://creativecommons.org/licenses/by-sa/3.0/</span>
+0032 <span class="comment">%</span>
+0033 <span class="comment">% DEVELOPMENT</span>
+0034 <span class="comment">%   v 1.0   2012-09-12</span>
+0035 <span class="comment">%           DP. Inital attempt.</span>
+0036 <span class="comment">%</span>
+0037 <span class="comment">% TODO</span>
+0038 <span class="comment">%   Can we add descriptions to DFS2 files?  Ask for user input, a-la</span>
+0039 <span class="comment">%   mrg_dfs0_car_to_pol?</span>
+0040 
+0041 <span class="comment">%% Load libraries</span>
+0042 NET.addAssembly(<span class="string">'DHI.Generic.MikeZero'</span>);
+0043 import DHI.Generic.MikeZero.*
+0044 import DHI.Generic.MikeZero.DFS.*;
+0045 import DHI.Generic.MikeZero.DFS.dfs123.*;
+0046 
+0047 <span class="comment">%% Get file and important info</span>
+0048 [file, path] = uigetfile(<span class="string">'*.dfs2'</span>, <span class="string">'Choose a DFS2 file to process'</span>);
+0049 in_filename = [path,file];
+0050 out_filename = [path,file(1:end-5),<span class="string">'_dir.dfs2'</span>];
+0051 dfs2_in = DfsFileFactory.Dfs2FileOpenEdit(in_filename);
+0052 nsteps    = dfs2_in.FileInfo.TimeAxis.NumberOfTimeSteps;
+0053 deleteval = double(dfs2_in.FileInfo.DeleteValueFloat);
+0054 
+0055 <span class="comment">%% Create the new DFS2 file</span>
+0056 <span class="comment">%factory = mrg_effing_factory();</span>
+0057 factory = DHI.Generic.MikeZero.DFS.DfsFactory;
+0058 builder = Dfs2Builder.Create(<span class="string">'Matlab dfs2 file'</span>,<span class="string">'Matlab DFS'</span>,0);
+0059 
+0060 <span class="comment">% Set up the header</span>
+0061 builder.SetDataType(dfs2_in.FileInfo.DataType);
+0062 builder.SetGeographicalProjection(dfs2_in.FileInfo.Projection);
+0063 builder.SetTemporalAxis(dfs2_in.FileInfo.TimeAxis);
+0064 builder.SetSpatialAxis(dfs2_in.SpatialAxis);
+0065 builder.DeleteValueFloat = dfs2_in.FileInfo.DeleteValueFloat;
+0066 
+0067 <span class="comment">% Add custom block(s) - Probably not needed?</span>
+0068 <span class="comment">% M21_Misc : {orientation (should match projection), drying depth, -900=has projection, land value, 0, 0, 0}</span>
+0069 <span class="comment">% builder.AddCustomBlock(dfsCreateCustomBlock(factory, 'M21_Misc', [327, 0.2, -900, 10, 0, 0, 0], 'System.Single'));</span>
+0070 <span class="keyword">for</span> j=1:double(dfs2_in.FileInfo.CustomBlocks.Count)
+0071     custom_vec = zeros(1,7);
+0072     <span class="keyword">for</span> i=1:7
+0073         custom_vec(i) = double(dfs2_in.FileInfo.CustomBlocks.Item(j-1).Data.Item(i-1));
+0074     <span class="keyword">end</span>
+0075     custom_name = char(dfs2_in.FileInfo.CustomBlocks.Item(j-1).Name);
+0076     builder.AddCustomBlock(dfsCreateCustomBlock(factory, custom_name, custom_vec, <span class="string">'System.Single'</span>));
+0077 <span class="keyword">end</span>
+0078 
+0079 <span class="comment">% Define and add items items</span>
+0080 <span class="keyword">if</span> wind
+0081     builder.AddDynamicItem(<span class="string">'Derived Wind Direction'</span>, eumQuantity.Create(eumItem.eumIWindDirection, eumUnit.eumUdegree), DfsSimpleType.Float, DataValueType.Instantaneous);
+0082     builder.AddDynamicItem(<span class="string">'Derived Wind Speed'</span>, eumQuantity.Create(eumItem.eumIWindSpeed, eumUnit.eumUmeterPerSec), DfsSimpleType.Float, DataValueType.Instantaneous);
+0083 <span class="keyword">else</span>
+0084     builder.AddDynamicItem(<span class="string">'Derived Current Direction'</span>, eumQuantity.Create(eumItem.eumICurrentDirection, eumUnit.eumUdegree), DfsSimpleType.Float, DataValueType.Instantaneous);
+0085     builder.AddDynamicItem(<span class="string">'Derived Current Speed'</span>, eumQuantity.Create(eumItem.eumICurrentSpeed, eumUnit.eumUmeterPerSec), DfsSimpleType.Float, DataValueType.Instantaneous);
+0086 <span class="keyword">end</span>
+0087 
+0088 <span class="comment">% Create the file ready for data</span>
+0089 builder.CreateFile(out_filename);
+0090 
+0091 dfs2_out = builder.GetFile();
+0092 
+0093 <span class="comment">%% Do the heavy lifting</span>
+0094 <span class="comment">% matlab polar coodinates are orientated against the clock and start at</span>
+0095 <span class="comment">% East with zero, this is taken care of by swapping x,y in the function</span>
+0096 <span class="comment">% (output)</span>
+0097 
+0098 <span class="keyword">for</span> i=0:nsteps-1
+0099     east_DFS = dfs2_in.ReadItemTimeStep(curr_east,i);
+0100     north_DFS = dfs2_in.ReadItemTimeStep(curr_north,i);
+0101     east_data = double(east_DFS.Data);
+0102     north_data = double(north_DFS.Data);
+0103     <span class="keyword">if</span> north_DFS.Time ~= east_DFS.Time
+0104         error(<span class="string">'mrg_dfs2_cart_to_pol:timeissue'</span>,<span class="string">'Time mismatch between objects?!'</span>)
+0105     <span class="keyword">end</span>
+0106     time = east_DFS.Time;
+0107     [dir,speed] = cart2pol(north_data,east_data);
+0108     <span class="comment">% Following code shamelessly ripped from mrg_dfs0_cart_to_pol (BE)</span>
+0109     <span class="keyword">if</span> wind
+0110         dir = dir*180/pi + 180;
+0111     <span class="keyword">else</span>
+0112         dir = dir*180/pi;
+0113         index = ~(dir &gt; 0);
+0114         dir = dir + index * 360;
+0115     <span class="keyword">end</span>
+0116     dfs2_out.WriteItemTimeStepNext(1,NET.convertArray(single(dir)));
+0117     dfs2_out.WriteItemTimeStepNext(2,NET.convertArray(single(speed)));
+0118 <span class="keyword">end</span>
+0119 
+0120 <span class="comment">%% Finish up</span>
+0121 dfs2_in.Close();
+0122 dfs2_out.Close();
+0123 
+0124 <span class="comment">%% Assembly import</span></pre></div>
+<hr><address>Generated on Thu 06-Jun-2013 11:05:07 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

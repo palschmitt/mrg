@@ -1,0 +1,140 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of mrg_parse_metstation</title>
+  <meta name="keywords" content="mrg_parse_metstation">
+  <meta name="description" content="TODO: Documentation">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../index.html">Home</a> &gt;  <a href="#">mrg</a> &gt; <a href="index.html">MRG_metstation</a> &gt; mrg_parse_metstation.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../index.html"><img alt="<" border="0" src="../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for mrg\MRG_metstation&nbsp;<img alt=">" border="0" src="../../right.png"></a></td></tr></table>-->
+
+<h1>mrg_parse_metstation
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>TODO: Documentation</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function [out, outhead] = mrg_parse_metstation(fname, verify) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> TODO: Documentation
+ Parses Weatherstation data
+ 01/02/2013 - Intial atempt DP</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [out, outhead] = mrg_parse_metstation(fname, verify)</a>
+0002 <span class="comment">% TODO: Documentation</span>
+0003 <span class="comment">% Parses Weatherstation data</span>
+0004 <span class="comment">% 01/02/2013 - Intial atempt DP</span>
+0005 
+0006 <span class="keyword">if</span> ~exist(<span class="string">'verify'</span>, <span class="string">'var'</span>)
+0007     verify = 1;
+0008 <span class="keyword">end</span>
+0009 
+0010 expressn = [<span class="string">'^'</span><span class="keyword">...</span>
+0011     <span class="string">'(?&lt;time&gt;\d{2}:\d{2}:\d{2})\s+'</span><span class="keyword">...</span>
+0012     <span class="string">'(?&lt;date&gt;\d{2}\.\d{2}\.\d{2})\s+(\d{1,2}\s+)?'</span><span class="keyword">...</span>
+0013     <span class="string">'(?&lt;ligh&gt;\d+\.\d+)?\s+(\d{1,2}\s+)?'</span><span class="keyword">...</span>
+0014     <span class="string">'(?&lt;wspd&gt;\d+\.\d+)?\s+(\d{1,2}\s+)?'</span><span class="keyword">...</span>
+0015     <span class="string">'(?&lt;wdir&gt;\d{3,6})?\s+(\d{1,2}\s+)?'</span><span class="keyword">...</span>
+0016     <span class="string">'(?&lt;pres&gt;\d+\.\d+)?\s+(\d{1,2}\s+)?'</span><span class="keyword">...</span>
+0017     <span class="string">'(?&lt;vol1&gt;\d+\.\d+)?\s+(\d{1,2}\s+)?'</span><span class="keyword">...</span>
+0018     <span class="string">'(?&lt;vol2&gt;\d+\.\d+)?\s+(\d{1,2}\s+)?'</span><span class="keyword">...</span>
+0019     <span class="string">'(?&lt;digi&gt;\d+\.\d+)?\s+(\d{1,2}\s+)?'</span><span class="keyword">...</span>
+0020     <span class="string">'(?&lt;temp&gt;\d+\.\d+)?'</span>];
+0021 
+0022 <span class="comment">%outhead = {'Line', 'Date', 'Time', 'Light', 'WSpeed', 'WDir', 'Pressure', 'Volt1', 'Vol2', 'Digi', 'Temp'};</span>
+0023 <span class="comment">%out = repmat({NaN, ' ', ' ', NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN}, 5000, 1); % 5000 seems like enough</span>
+0024 outhead = {<span class="string">'Line'</span>, <span class="string">'DateTime'</span>, <span class="string">'Light'</span>, <span class="string">'WSpeed'</span>, <span class="string">'WDir'</span>, <span class="string">'Pressure'</span>, <span class="string">'Volt1'</span>, <span class="string">'Vol2'</span>, <span class="string">'Digi'</span>, <span class="string">'Temp'</span>};
+0025 out = NaN(5000, 10);
+0026 <span class="comment">%fileID = fopen('minicom111212_data.txt','r');</span>
+0027 fileID = fopen(fname,<span class="string">'r'</span>);
+0028 tline = fgetl(fileID);
+0029 line = 1;
+0030 <span class="keyword">while</span> ischar(tline)
+0031     tline = strtrim(tline);
+0032     <span class="comment">%disp(tline)</span>
+0033     [outline] = regexp(tline,expressn,<span class="string">'names'</span>);
+0034     <span class="keyword">if</span> ~isempty(outline)
+0035         <span class="comment">%disp(outline)</span>
+0036         <span class="keyword">try</span>
+0037             mtime = datenum([outline.date, <span class="string">' '</span>, outline.time], <span class="string">'dd.mm.yy HH:MM:SS'</span>);
+0038         <span class="keyword">catch</span>
+0039             disp([outline.date, <span class="string">' '</span>, outline.time, <span class="string">' - Conversion Failed (Line '</span>, line,<span class="string">' of original file. Substituting NaN'</span>]);
+0040             mtime = NaN;
+0041         <span class="keyword">end</span>
+0042         light = str2double(outline.ligh);
+0043         wspeed = str2double(outline.wspd);
+0044         wdir = str2double(outline.wdir);
+0045         pressure = str2double(outline.pres);
+0046         volt1 = str2double(outline.vol1);
+0047         volt2 = str2double(outline.vol2);
+0048         digi = str2double(outline.digi);
+0049         temp = str2double(outline.temp);
+0050         
+0051         <span class="keyword">if</span> verify
+0052             <span class="comment">% Light: If more than 2500, NaN.  If less -10, NaN.  If -5 to 0, then zero.</span>
+0053             <span class="keyword">if</span> light &gt; 2500 || light &lt; -5
+0054                 light = NaN;
+0055             <span class="keyword">elseif</span> light &lt; 0
+0056                 light = 0;
+0057             <span class="keyword">end</span>
+0058             
+0059             <span class="comment">% Windspeed: Between 0 and 100 m/s</span>
+0060             <span class="keyword">if</span> wspeed &lt; -0.5 || wspeed &gt; 100
+0061                 wspeed = NaN;
+0062             <span class="keyword">elseif</span> wspeed &lt; 0
+0063                 wspeed = 0;
+0064             <span class="keyword">end</span>
+0065             
+0066             <span class="comment">% WindDirection: Between 0 and 360</span>
+0067             <span class="keyword">if</span> wdir &lt; 0 || wdir &gt; 360
+0068                 wspeed = NaN;
+0069             <span class="keyword">end</span>
+0070             
+0071             <span class="comment">% Pressure: Between 600 and 2000</span>
+0072             <span class="keyword">if</span> pressure &lt; 600 || pressure &gt; 2000
+0073                 pressure = NaN;
+0074             <span class="keyword">end</span>
+0075             
+0076             <span class="comment">% Temp between -50 and 50</span>
+0077             <span class="keyword">if</span> temp &lt; -50 || temp &gt; 50
+0078                 temp = NaN;
+0079             <span class="keyword">end</span>
+0080         <span class="keyword">end</span>
+0081         out(line,:) = [line, mtime, light, wspeed, wdir, pressure, volt1, volt2, digi, temp];
+0082     <span class="keyword">else</span>
+0083         out(line,:) = [line,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN];
+0084     <span class="keyword">end</span>
+0085     
+0086     tline = fgetl(fileID);
+0087     line = line+1;
+0088 <span class="keyword">end</span>
+0089 out(all(isnan(out(:,2:end)), 2),:) = [];
+0090 fclose(fileID);
+0091 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Thu 06-Jun-2013 11:05:07 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

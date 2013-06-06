@@ -1,0 +1,149 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of mrg_create_npp_langdef</title>
+  <meta name="keywords" content="mrg_create_npp_langdef">
+  <meta name="description" content="Creates a language definition file for NotePad++ from some template files.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../index.html">Home</a> &gt;  <a href="#">mrg</a> &gt; <a href="index.html">MRG_MIKE</a> &gt; mrg_create_npp_langdef.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../index.html"><img alt="<" border="0" src="../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for mrg\MRG_MIKE&nbsp;<img alt=">" border="0" src="../../right.png"></a></td></tr></table>-->
+
+<h1>mrg_create_npp_langdef
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>Creates a language definition file for NotePad++ from some template files.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function mrg_create_npp_langdef() </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> Creates a language definition file for NotePad++ from some template files.
+ 
+ Requires userDefineLang_PFS_Template.xml, pfs_static_list.txt and 
+ pfs_variable_list.txt which can be found in Dans MIKE PFS respository:
+ https://github.com/dpritchard/mike_pfs_npp
+ 
+ All that being said, you may as well just get the generated XML from the
+ above link!</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function mrg_create_npp_langdef()</a>
+0002 <span class="comment">% Creates a language definition file for NotePad++ from some template files.</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% Requires userDefineLang_PFS_Template.xml, pfs_static_list.txt and</span>
+0005 <span class="comment">% pfs_variable_list.txt which can be found in Dans MIKE PFS respository:</span>
+0006 <span class="comment">% https://github.com/dpritchard/mike_pfs_npp</span>
+0007 <span class="comment">%</span>
+0008 <span class="comment">% All that being said, you may as well just get the generated XML from the</span>
+0009 <span class="comment">% above link!</span>
+0010 
+0011 <span class="comment">%% Get the Template</span>
+0012 <span class="comment">% We assume the files with the lists are in same directory</span>
+0013 old_dir = cd;
+0014 [file, path] = uigetfile(<span class="string">'userDefineLang_PFS_Template.xml'</span>, <span class="string">'Get Template'</span>);
+0015 cd(path)
+0016 fileID = fopen(file);
+0017 s = textscan(fileID,<span class="string">'%s'</span>,<span class="string">'Delimiter'</span>,<span class="string">'\n'</span>);
+0018 fclose(fileID);
+0019 s = s{1};
+0020 
+0021 <span class="comment">%% Static Items</span>
+0022 fileID = fopen(<span class="string">'pfs_static_list.txt'</span>);
+0023 static_items = textscan(fileID,<span class="string">'%s'</span>, <span class="string">'Delimiter'</span>, <span class="string">'\n'</span>);
+0024 fclose(fileID);
+0025 
+0026 loc_static = 1;
+0027 trim_static = 0;
+0028 static_items_start_out = cell(1,length(static_items{1}));
+0029 static_items_keyword_out = cell(1,length(static_items{1}));
+0030 <span class="keyword">for</span> i = 1:length(static_items{1})
+0031     title_match = regexp(static_items{1}(i),<span class="string">'^&lt;--\s*[\w]+\s*--&gt;'</span>);
+0032     <span class="keyword">if</span> title_match{1}
+0033         disp(static_items{1}(i))
+0034         trim_static = trim_static+1;
+0035     <span class="keyword">else</span>
+0036         static_items_start_out(loc_static)=(strcat(<span class="string">'['</span>,static_items{1}(i), <span class="string">']'</span>));
+0037         static_items_keyword_out(loc_static)=static_items{1}(i);
+0038         loc_static = loc_static+1;
+0039     <span class="keyword">end</span>
+0040     
+0041 <span class="keyword">end</span>
+0042 static_items_start_out = static_items_start_out(1:end-trim_static);
+0043 static_items_keyword_out = static_items_keyword_out(1:end-trim_static);
+0044 
+0045 <span class="comment">%% Variable Items</span>
+0046 <span class="comment">%[file, path] = uigetfile('.txt', 'Get Variable List');</span>
+0047 fileID = fopen(<span class="string">'pfs_variable_list.txt'</span>);
+0048 var_items = textscan(fileID,<span class="string">'%s'</span>, <span class="string">'Delimiter'</span>, <span class="string">'\n'</span>);
+0049 fclose(fileID);
+0050 
+0051 var_len = 50;
+0052 
+0053 loc_var = 1;
+0054 trim_var = 0;
+0055 var_items_start_out = cell(1,length(var_items{1})*var_len);
+0056 var_items_keyword_out = cell(1,length(var_items{1})*var_len);
+0057 <span class="keyword">for</span> i = 1:length(var_items{1})
+0058     title_match = regexp(var_items{1}(i),<span class="string">'^&lt;--\s*[\w]+\s*--&gt;'</span>);
+0059     <span class="keyword">if</span> title_match{1}
+0060         disp(var_items{1}(i))
+0061         trim_var = trim_var+1;
+0062     <span class="keyword">else</span>
+0063         <span class="keyword">for</span> j = 1:var_len
+0064             var_items_start_out(loc_var) = strcat(<span class="string">'['</span>,var_items{1}(i), <span class="string">'_'</span>, num2str(j), <span class="string">']'</span>);
+0065             var_items_keyword_out(loc_var) = strcat(var_items{1}(i), <span class="string">'_'</span>, num2str(j));
+0066             loc_var = loc_var+1;
+0067         <span class="keyword">end</span>
+0068     <span class="keyword">end</span>
+0069 <span class="keyword">end</span>
+0070 <span class="comment">% Trim to account for headers...</span>
+0071 var_items_start_out = var_items_start_out(1:end-trim_var*var_len);
+0072 var_items_keyword_out = var_items_keyword_out(1:end-trim_var*var_len);
+0073 
+0074 <span class="comment">%% Combine Items</span>
+0075 start_out = [static_items_start_out,var_items_start_out];
+0076 keyword_out = [static_items_keyword_out,var_items_keyword_out];
+0077 start_string = [sprintf(<span class="string">'%s '</span>,start_out{1:end-1}),start_out{end}];
+0078 keyword_string=[sprintf(<span class="string">'%s '</span>,keyword_out{1:end-1}),keyword_out{end}];
+0079 
+0080 <span class="comment">%% Populate the template</span>
+0081 s = strrep(s,<span class="string">'[MRG_START_FILES]'</span>, start_string);
+0082 s = strrep(s,<span class="string">'[MRG_KEYWORDS]'</span>, keyword_string);
+0083 
+0084 <span class="comment">%% Write File</span>
+0085 [nrows,~]= size(s);
+0086 filename = <span class="string">'userDefineLang.xml'</span>;
+0087 fid = fopen(filename, <span class="string">'w'</span>);
+0088 
+0089 <span class="keyword">for</span> row=1:nrows
+0090     fprintf(fid, <span class="string">'%s\n'</span>, s{row,:});
+0091 <span class="keyword">end</span>
+0092 
+0093 fclose(fid);
+0094 cd(old_dir);
+0095 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Thu 06-Jun-2013 11:05:07 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

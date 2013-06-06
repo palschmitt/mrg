@@ -1,0 +1,154 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of mrg_is_equidistant</title>
+  <meta name="keywords" content="mrg_is_equidistant">
+  <meta name="description" content="Checks if an object is has an eqidistant timestep.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../index.html">Home</a> &gt;  <a href="#">mrg</a> &gt; <a href="index.html">MRG_MIKE</a> &gt; mrg_is_equidistant.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../index.html"><img alt="<" border="0" src="../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for mrg\MRG_MIKE&nbsp;<img alt=">" border="0" src="../../right.png"></a></td></tr></table>-->
+
+<h1>mrg_is_equidistant
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>Checks if an object is has an eqidistant timestep.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function tf = mrg_is_equidistant(varargin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> Checks if an object is has an eqidistant timestep.
+
+ INPUT
+   ...     Either a MATLAB vector or a MATLAB structure.  See NOTES.
+
+ OUTPUT
+   tf      A logical (0 or 1) indicating if the object is equidistant.
+
+ REQUIREMENTS
+   Requires the MIKE Matlab toolbox.  Tested with v. 20110304
+
+ NOTES
+   If a vector is supplied, then a diff() is performed and the check
+   proceeds via testing the uniqueness of this diff.  If a structure is
+   provided, it is tested to see if it contains a field 'TimeAxisType'.
+   If it is we assume it is a structure returned by one of the core MRG
+   functions and we test the values the timeaxis type for known equidstant
+   values.
+
+ LICENCE
+   Created by Daniel Pritchard (www.pritchard.co)
+   Distributed under a creative commons CC BY-SA licence. See here:
+   http://creativecommons.org/licenses/by-sa/3.0/
+
+ DEVELOPMENT
+   v 1.0   2012
+           DP. First version
+   v 1.1   14/02/2013
+           DP. Documentation
+
+ TODO
+   Extend to allow for some flexability in timestep diff (e.g. within 1 sec)...
+   Migrate other code to use this function
+% Check input</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function tf = mrg_is_equidistant(varargin)</a>
+0002 <span class="comment">% Checks if an object is has an eqidistant timestep.</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% INPUT</span>
+0005 <span class="comment">%   ...     Either a MATLAB vector or a MATLAB structure.  See NOTES.</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">% OUTPUT</span>
+0008 <span class="comment">%   tf      A logical (0 or 1) indicating if the object is equidistant.</span>
+0009 <span class="comment">%</span>
+0010 <span class="comment">% REQUIREMENTS</span>
+0011 <span class="comment">%   Requires the MIKE Matlab toolbox.  Tested with v. 20110304</span>
+0012 <span class="comment">%</span>
+0013 <span class="comment">% NOTES</span>
+0014 <span class="comment">%   If a vector is supplied, then a diff() is performed and the check</span>
+0015 <span class="comment">%   proceeds via testing the uniqueness of this diff.  If a structure is</span>
+0016 <span class="comment">%   provided, it is tested to see if it contains a field 'TimeAxisType'.</span>
+0017 <span class="comment">%   If it is we assume it is a structure returned by one of the core MRG</span>
+0018 <span class="comment">%   functions and we test the values the timeaxis type for known equidstant</span>
+0019 <span class="comment">%   values.</span>
+0020 <span class="comment">%</span>
+0021 <span class="comment">% LICENCE</span>
+0022 <span class="comment">%   Created by Daniel Pritchard (www.pritchard.co)</span>
+0023 <span class="comment">%   Distributed under a creative commons CC BY-SA licence. See here:</span>
+0024 <span class="comment">%   http://creativecommons.org/licenses/by-sa/3.0/</span>
+0025 <span class="comment">%</span>
+0026 <span class="comment">% DEVELOPMENT</span>
+0027 <span class="comment">%   v 1.0   2012</span>
+0028 <span class="comment">%           DP. First version</span>
+0029 <span class="comment">%   v 1.1   14/02/2013</span>
+0030 <span class="comment">%           DP. Documentation</span>
+0031 <span class="comment">%</span>
+0032 <span class="comment">% TODO</span>
+0033 <span class="comment">%   Extend to allow for some flexability in timestep diff (e.g. within 1 sec)...</span>
+0034 <span class="comment">%   Migrate other code to use this function</span>
+0035 <span class="comment">%% Check input</span>
+0036 <span class="keyword">if</span> isempty(varargin)
+0037     error(<span class="string">'Input is required.'</span>);
+0038 <span class="keyword">end</span>
+0039 
+0040 <span class="keyword">if</span> length(varargin)&gt;1
+0041     error(<span class="string">'This function only takes one input.'</span>);
+0042 <span class="keyword">end</span>
+0043 
+0044 object = varargin{1};
+0045 
+0046 <span class="comment">%% Check if object is a standard MRG output...</span>
+0047 <span class="keyword">if</span> (isstruct(object) &amp;&amp; isfield(object, <span class="string">'TimeAxisType'</span>))
+0048     <span class="keyword">if</span> any(strcmp(object.TimeAxisType, {<span class="string">'CalendarEquidistant'</span>, <span class="string">'TimeEquidistant'</span>}))
+0049         tf = 1;
+0050         <span class="keyword">return</span>
+0051     <span class="keyword">else</span>
+0052         tf = 0;
+0053         <span class="keyword">return</span>
+0054     <span class="keyword">end</span>
+0055 <span class="keyword">end</span>
+0056 
+0057 <span class="comment">%% Object is not a structure, just do a diff</span>
+0058 <span class="keyword">if</span> ndims(object) &gt; 2
+0059     error(<span class="string">'Unless the input is a structure, this function can only take a 2D MATLAB matrix.'</span>);
+0060 <span class="keyword">end</span>
+0061 
+0062 <span class="keyword">if</span> ~any(size(object)==1)
+0063     error(<span class="string">'Unless the input is a structure, this function can only take a MATLAB matrix with either a single row, or a single column.'</span>);
+0064 <span class="keyword">end</span>
+0065 
+0066 diffs = diff(object);
+0067 <span class="keyword">if</span> length(unique(diffs)) == 1
+0068     tf = 1;
+0069     <span class="keyword">return</span>
+0070 <span class="keyword">else</span>
+0071     tf = 0;
+0072     <span class="keyword">return</span>
+0073 <span class="keyword">end</span>
+0074 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Thu 06-Jun-2013 11:05:07 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

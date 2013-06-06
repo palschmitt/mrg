@@ -1,0 +1,169 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of mrg_struct_to_csv</title>
+  <meta name="keywords" content="mrg_struct_to_csv">
+  <meta name="description" content="A function to output a structure to csv.  Currently can only deal with a">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../index.html">Home</a> &gt;  <a href="#">mrg</a> &gt; <a href="index.html">MRG_utilities</a> &gt; mrg_struct_to_csv.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../index.html"><img alt="<" border="0" src="../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for mrg\MRG_utilities&nbsp;<img alt=">" border="0" src="../../right.png"></a></td></tr></table>-->
+
+<h1>mrg_struct_to_csv
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>A function to output a structure to csv.  Currently can only deal with a</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function mrg_struct_to_csv(in, outfile) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> A function to output a structure to csv.  Currently can only deal with a
+ limited number of data types, and only deals with 'square' structures.
+
+ INPUT
+   in          A structure with equal-length fields of either cell arrays
+               or things that test true for is isnumeric(). Other things
+               will fail.  
+   outfile     A character string giving the (possibly fully qualified)
+               output filename.
+ 
+ LICENCE
+   Created by Daniel Pritchard (www.pritchard.co)
+   Distributed under a creative commons CC BY-SA licence. See here:
+   http://creativecommons.org/licenses/by-sa/3.0/
+
+ DEVELOPMENT
+   v 1.0   Time Immemorial
+           DP.  Why does MATLAB not do this by defualt?
+   v 1.1   November 2012
+           DP.  Documentation.   
+   v 1.2   DP. Silently strips ',' from strings
+   v 1.3   DP. Quoting string is nicer, lets do that.
+
+ TODO
+   Catch input.  Prompt user for filename if not present.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../mrg/MRG_MIKE/mrg_dfsu_exceed.html" class="code" title="function [data] = mrg_dfsu_exceed(exceed, chunk_size)">mrg_dfsu_exceed</a>	Performs an exceedance analysis on a DFSU files.</li><li><a href="../../mrg/MRG_MIKE/mrg_dfsu_stats.html" class="code" title="function [data] = mrg_dfsu_stats(chunk_size)">mrg_dfsu_stats</a>	Calculates some basic statistics from objects in DFSU files.</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function mrg_struct_to_csv(in, outfile)</a>
+0002 <span class="comment">% A function to output a structure to csv.  Currently can only deal with a</span>
+0003 <span class="comment">% limited number of data types, and only deals with 'square' structures.</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">% INPUT</span>
+0006 <span class="comment">%   in          A structure with equal-length fields of either cell arrays</span>
+0007 <span class="comment">%               or things that test true for is isnumeric(). Other things</span>
+0008 <span class="comment">%               will fail.</span>
+0009 <span class="comment">%   outfile     A character string giving the (possibly fully qualified)</span>
+0010 <span class="comment">%               output filename.</span>
+0011 <span class="comment">%</span>
+0012 <span class="comment">% LICENCE</span>
+0013 <span class="comment">%   Created by Daniel Pritchard (www.pritchard.co)</span>
+0014 <span class="comment">%   Distributed under a creative commons CC BY-SA licence. See here:</span>
+0015 <span class="comment">%   http://creativecommons.org/licenses/by-sa/3.0/</span>
+0016 <span class="comment">%</span>
+0017 <span class="comment">% DEVELOPMENT</span>
+0018 <span class="comment">%   v 1.0   Time Immemorial</span>
+0019 <span class="comment">%           DP.  Why does MATLAB not do this by defualt?</span>
+0020 <span class="comment">%   v 1.1   November 2012</span>
+0021 <span class="comment">%           DP.  Documentation.</span>
+0022 <span class="comment">%   v 1.2   DP. Silently strips ',' from strings</span>
+0023 <span class="comment">%   v 1.3   DP. Quoting string is nicer, lets do that.</span>
+0024 <span class="comment">%</span>
+0025 <span class="comment">% TODO</span>
+0026 <span class="comment">%   Catch input.  Prompt user for filename if not present.</span>
+0027 
+0028 <span class="comment">%% Go</span>
+0029 <span class="keyword">if</span> ~isstruct(in)
+0030     error(<span class="string">'Input must be a structure'</span>)
+0031 <span class="keyword">end</span>
+0032 
+0033 <span class="keyword">if</span> ~ischar(outfile)
+0034     error(<span class="string">'Outfile must be a charater string'</span>)
+0035 <span class="keyword">end</span>
+0036 
+0037 names = fieldnames(in);
+0038 ncol = length(names);
+0039 
+0040 lengths = ones(1,length(names),<span class="string">'int32'</span>);
+0041 <span class="keyword">for</span> n = 1:length(names)
+0042     lengths(1,n) = length(in.(names{n}));
+0043 <span class="keyword">end</span>
+0044 
+0045 <span class="keyword">if</span>~(all(lengths==lengths(1)))
+0046     error(<span class="string">'All variables in the input structure must have the same length'</span>)
+0047 <span class="keyword">end</span>
+0048 
+0049 nrow = unique(lengths);
+0050 
+0051 fid = fopen(outfile, <span class="string">'w'</span>);
+0052 
+0053 <span class="keyword">for</span> n = 1:length(names)-1
+0054     fprintf(fid, <span class="string">'%s,'</span>, names{n});
+0055 <span class="keyword">end</span>
+0056 fprintf(fid, <span class="string">'%s\n'</span>, names{length(names)});
+0057 
+0058 <span class="keyword">for</span> n = 1:nrow
+0059     <span class="comment">% Do something for each of the columns</span>
+0060     <span class="keyword">for</span> m = 1:length(names)-1
+0061         val = in.(names{m})(n);
+0062         <span class="keyword">if</span> iscell(val)
+0063             <span class="keyword">if</span> isnumeric(val{:})
+0064                 fprintf(fid, <span class="string">'%f,'</span>, val{:});
+0065             <span class="keyword">elseif</span> ischar(val{:})
+0066                 <span class="comment">%fprintf(fid, '%s,', strrep(val{:}, ',', ''));</span>
+0067                 fprintf(fid, <span class="string">'&quot;%s&quot;,'</span>, val{:});
+0068             <span class="keyword">else</span>
+0069                 error(<span class="string">'Cannot handle a cell array which does not evaluate to either a number or a character'</span>)
+0070             <span class="keyword">end</span>
+0071         <span class="keyword">elseif</span> isnumeric(val)
+0072             fprintf(fid, <span class="string">'%f,'</span>, val(:));
+0073         <span class="keyword">else</span>
+0074             error(<span class="string">'Cannot handle something that contains things other than cell or numeric arrays'</span>)
+0075         <span class="keyword">end</span>
+0076     <span class="keyword">end</span>
+0077     <span class="comment">% Do something different for the last column</span>
+0078     val = in.(names{length(names)})(n);
+0079     <span class="keyword">if</span> iscell(val)
+0080         <span class="keyword">if</span> isnumeric(val{:})
+0081             fprintf(fid, <span class="string">'%f\n'</span>, val{:});
+0082         <span class="keyword">elseif</span> ischar(val{:})
+0083             fprintf(fid, <span class="string">'%s\n'</span>, val{:});
+0084         <span class="keyword">else</span>
+0085             error(<span class="string">'Cannot handle a cell array which does not evaluate to either a number or a character'</span>)
+0086         <span class="keyword">end</span>
+0087     <span class="keyword">elseif</span> isnumeric(val)
+0088         fprintf(fid, <span class="string">'%f\n'</span>, val(:));
+0089     <span class="keyword">else</span>
+0090         error(<span class="string">'Cannot handle something that contains things other than cell or numeric arrays'</span>)
+0091     <span class="keyword">end</span>
+0092     
+0093     
+0094 <span class="keyword">end</span>
+0095 
+0096 fclose(fid);
+0097 
+0098 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Thu 06-Jun-2013 11:05:07 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

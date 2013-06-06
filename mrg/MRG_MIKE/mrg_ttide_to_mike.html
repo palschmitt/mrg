@@ -1,0 +1,141 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of mrg_ttide_to_mike</title>
+  <meta name="keywords" content="mrg_ttide_to_mike">
+  <meta name="description" content="Outputs a .con file which is compatible with MIKE.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../index.html">Home</a> &gt;  <a href="#">mrg</a> &gt; <a href="index.html">MRG_MIKE</a> &gt; mrg_ttide_to_mike.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../index.html"><img alt="<" border="0" src="../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for mrg\MRG_MIKE&nbsp;<img alt=">" border="0" src="../../right.png"></a></td></tr></table>-->
+
+<h1>mrg_ttide_to_mike
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>Outputs a .con file which is compatible with MIKE.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function mrg_ttide_to_mike(tidestruc, tidedata, outfname) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> Outputs a .con file which is compatible with MIKE.
+
+ INPUT
+   tidestruc   The struct returned by t_tide contining the harmonics,
+               phase and amplitude
+   tidedata    An optional matrix containing the original data used for
+               the harmonic analysis.  Used to calculate Z0 (which is not
+               provided by t_tide).  Assumed to be zero if not supplied.
+   outfname    An optional string specifying the output filename. Prompted
+               if not supplied.
+
+ OUTPUT
+   NO OUTPUT AT CONSOLE
+   User input is required if output filename (outfname) not supplied.
+
+ LICENCE
+   Created by Daniel Pritchard (www.pritchard.co)
+   Distributed under a creative commons CC BY-SA licence.  See here:
+   http://creativecommons.org/licenses/by-sa/3.0/
+
+ DEVELOPMENT
+   v 1.0   2011-09
+           Initial attempt.  DP
+   v 1.1   2012-09-05
+           Added output filename checking. DP
+           Documentation.  DP</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function mrg_ttide_to_mike(tidestruc, tidedata, outfname)</a>
+0002 <span class="comment">% Outputs a .con file which is compatible with MIKE.</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% INPUT</span>
+0005 <span class="comment">%   tidestruc   The struct returned by t_tide contining the harmonics,</span>
+0006 <span class="comment">%               phase and amplitude</span>
+0007 <span class="comment">%   tidedata    An optional matrix containing the original data used for</span>
+0008 <span class="comment">%               the harmonic analysis.  Used to calculate Z0 (which is not</span>
+0009 <span class="comment">%               provided by t_tide).  Assumed to be zero if not supplied.</span>
+0010 <span class="comment">%   outfname    An optional string specifying the output filename. Prompted</span>
+0011 <span class="comment">%               if not supplied.</span>
+0012 <span class="comment">%</span>
+0013 <span class="comment">% OUTPUT</span>
+0014 <span class="comment">%   NO OUTPUT AT CONSOLE</span>
+0015 <span class="comment">%   User input is required if output filename (outfname) not supplied.</span>
+0016 <span class="comment">%</span>
+0017 <span class="comment">% LICENCE</span>
+0018 <span class="comment">%   Created by Daniel Pritchard (www.pritchard.co)</span>
+0019 <span class="comment">%   Distributed under a creative commons CC BY-SA licence.  See here:</span>
+0020 <span class="comment">%   http://creativecommons.org/licenses/by-sa/3.0/</span>
+0021 <span class="comment">%</span>
+0022 <span class="comment">% DEVELOPMENT</span>
+0023 <span class="comment">%   v 1.0   2011-09</span>
+0024 <span class="comment">%           Initial attempt.  DP</span>
+0025 <span class="comment">%   v 1.1   2012-09-05</span>
+0026 <span class="comment">%           Added output filename checking. DP</span>
+0027 <span class="comment">%           Documentation.  DP</span>
+0028 
+0029 <span class="comment">%% Check input</span>
+0030 <span class="keyword">if</span> ~exist(<span class="string">'tidedata'</span>, <span class="string">'var'</span>)
+0031     warning(<span class="string">'ttide2mikecon:assumingZ0'</span>, <span class="string">'You did not supply the orignal tide data.  Assuming a Z0 of zero'</span>);
+0032     Z0 = 0;
+0033 <span class="keyword">else</span>
+0034     Z0 = nanmean(tidedata);
+0035 <span class="keyword">end</span>
+0036 
+0037 <span class="keyword">if</span> ~exist(<span class="string">'tidestruc'</span>, <span class="string">'var'</span>)
+0038     error(<span class="string">'You did not supply the data returned by t_tide.'</span>);
+0039 <span class="keyword">end</span>
+0040 
+0041 <span class="keyword">if</span> ~isstruct(tidestruc)
+0042     error(<span class="string">'The &quot;tidestruc&quot; variable supplied is not a structure.  You must supply the object returned by t_tide.'</span>);
+0043 <span class="keyword">end</span>
+0044 
+0045 <span class="comment">%% Get harmonic names and add 'Z0'</span>
+0046 names = cellstr(tidestruc.name);
+0047 names = vertcat({<span class="string">'Z0'</span>}, names);
+0048 
+0049 <span class="comment">%% Get phase and Amp</span>
+0050 phase = [Z0;tidestruc.tidecon(:,1)];
+0051 amp = [0;tidestruc.tidecon(:,3)];
+0052 
+0053 <span class="comment">%% Contruct a numbered column</span>
+0054 no = 1:size(names,1);
+0055 
+0056 <span class="comment">%% Write out file</span>
+0057 <span class="keyword">if</span> ~exist(<span class="string">'outfname'</span>, <span class="string">'var'</span>)
+0058     [fname,path] = uiputfile(<span class="string">'*.con'</span>,<span class="string">'Output filename'</span>);
+0059     outfname = [path,fname];
+0060 <span class="keyword">end</span>
+0061 
+0062 fid = fopen(outfname,<span class="string">'w'</span>);
+0063 fprintf(fid, <span class="string">'Constituents from t_tide analysis in MATLAB\n'</span>);
+0064 fprintf(fid, <span class="string">'Name\tAmp.\tPhase\n'</span>);
+0065 <span class="keyword">for</span> i = 1:size(names,1)
+0066     fprintf(fid,<span class="string">'%s \t %s \t %s \t %s\n'</span>,num2str(no(i)),names{i},num2str(phase(i)),num2str(amp(i)));
+0067 <span class="keyword">end</span>
+0068 fclose(fid);
+0069 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Thu 06-Jun-2013 11:05:07 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

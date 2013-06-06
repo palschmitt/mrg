@@ -1,0 +1,184 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of mrg_AQD_dat_to_mat</title>
+  <meta name="keywords" content="mrg_AQD_dat_to_mat">
+  <meta name="description" content="Reads .dat files from the Aquadopp">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../index.html">Home</a> &gt;  <a href="#">mrg</a> &gt; <a href="index.html">MRG_adcp</a> &gt; mrg_AQD_dat_to_mat.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../index.html"><img alt="<" border="0" src="../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for mrg\MRG_adcp&nbsp;<img alt=">" border="0" src="../../right.png"></a></td></tr></table>-->
+
+<h1>mrg_AQD_dat_to_mat
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>Reads .dat files from the Aquadopp</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function [AQDdat_mat_out] = mrg_AQD_dat_to_mat(filename, n_header_items) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> Reads .dat files from the Aquadopp
+ Outputs a structured array containing the data.
+   TODO:
+       Add compass correction (have as input)
+       Add pressure correction (also as input)
+       Allow header items as input (currently hard-coded below)
+       Allow side-lobe depth correction as an input (also hard-coded
+       below)
+       Optimise / speed up!
+       Deal with testing for equidistances
+   V2 DP 4/7/2012
+       - Removed all reference to the 'arbitary' percentage of the water
+       column cut-off (which is totally bollocks).  The correct number is
+       always cos(deg2rad(angle_of_the_beam)) - which for Nortek equipment
+       happens to be approx 90%
+       - Added 'header_items' as input (assumes 19 as the default if not supplied).</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [AQDdat_mat_out] = mrg_AQD_dat_to_mat(filename, n_header_items)</a>
+0002 <span class="comment">% Reads .dat files from the Aquadopp</span>
+0003 <span class="comment">% Outputs a structured array containing the data.</span>
+0004 <span class="comment">%   TODO:</span>
+0005 <span class="comment">%       Add compass correction (have as input)</span>
+0006 <span class="comment">%       Add pressure correction (also as input)</span>
+0007 <span class="comment">%       Allow header items as input (currently hard-coded below)</span>
+0008 <span class="comment">%       Allow side-lobe depth correction as an input (also hard-coded</span>
+0009 <span class="comment">%       below)</span>
+0010 <span class="comment">%       Optimise / speed up!</span>
+0011 <span class="comment">%       Deal with testing for equidistances</span>
+0012 <span class="comment">%   V2 DP 4/7/2012</span>
+0013 <span class="comment">%       - Removed all reference to the 'arbitary' percentage of the water</span>
+0014 <span class="comment">%       column cut-off (which is totally bollocks).  The correct number is</span>
+0015 <span class="comment">%       always cos(deg2rad(angle_of_the_beam)) - which for Nortek equipment</span>
+0016 <span class="comment">%       happens to be approx 90%</span>
+0017 <span class="comment">%       - Added 'header_items' as input (assumes 19 as the default if not supplied).</span>
+0018 
+0019 <span class="comment">%% Check input variables</span>
+0020 
+0021 <span class="comment">% Check that the supplied file exists</span>
+0022 <span class="keyword">if</span> ~exist(filename, <span class="string">'file'</span>)
+0023     error([<span class="string">'The filename you passed to '</span> mfilename <span class="string">' does not exists, or is not accessible by MATLAB'</span>]);
+0024 <span class="keyword">end</span>
+0025 
+0026 <span class="comment">% The number of header items (find this in the AquaDopp .hdr file).</span>
+0027 <span class="keyword">if</span> ~exist(<span class="string">'n_header_items'</span>, <span class="string">'var'</span>)
+0028     n_header_items = 19;
+0029     warning(<span class="string">'mrg:DefaultValue'</span>, [<span class="string">'The function '</span> mfilename <span class="string">' is assuming you have 19 header items'</span>]);
+0030 <span class="keyword">end</span>
+0031 
+0032 <span class="comment">%% Try to open a file connection</span>
+0033 fid = fopen(filename, <span class="string">'r'</span>);
+0034 <span class="comment">% Check that the file was opened</span>
+0035 <span class="keyword">if</span> fid == -1
+0036     error([<span class="string">'MATLAB was unable to open the file supplied to '</span> mfilename]);
+0037 <span class="keyword">end</span>
+0038 
+0039 <span class="comment">%% Check compass correction input</span>
+0040 
+0041 
+0042 <span class="comment">%% Check pressure correction input</span>
+0043 
+0044 
+0045 <span class="comment">%% Get started</span>
+0046 
+0047 AQDdat_mat = [];
+0048 AQDdat_raw_meta = {};
+0049 
+0050 <span class="comment">% Setup some counters and internal variables</span>
+0051 text_line_no = 1;
+0052 meta_dim = 1;
+0053 
+0054 <span class="comment">% Read a line of text.  The first line should be a header</span>
+0055 text_line = fgetl(fid);
+0056 
+0057 <span class="keyword">while</span> text_line ~= -1 <span class="comment">% i.e. Until the end of the file</span>
+0058     header = textscan(text_line, <span class="string">'%d %d %d %d %d %d %s %s %f %f %f %f %f %f %f %f %f %f %f'</span>);
+0059     <span class="comment">% Is a floating point number the best way to read this?</span>
+0060     <span class="keyword">if</span> length(header) ~= n_header_items
+0061         error([<span class="string">'The header on line '</span>, num2str(text_line_no), <span class="string">' did not have '</span>, num2str(n_header_items), <span class="string">' items.  This is probably an error.'</span>]);
+0062     <span class="keyword">else</span>
+0063         <span class="comment">% Write the header to the meta object</span>
+0064         AQDdat_raw_meta(meta_dim,:) = header;
+0065         <span class="comment">% Now we need to read the actual profile data...</span>
+0066         <span class="comment">% First, lets figure out how many lines to read...</span>
+0067         nread = header{n_header_items};
+0068         <span class="comment">% n_read should be the last object in the header</span>
+0069         <span class="comment">% i.e. it should be the number of bins and therefore the number of</span>
+0070         <span class="comment">% lines to read</span>
+0071         data_line_no = 1; <span class="comment">% Set (or re-set) a new line counter...</span>
+0072         <span class="keyword">while</span> data_line_no &lt;= nread
+0073             text_line = fgetl(fid);
+0074             text_line_no = text_line_no+1; <span class="comment">% Increment the whole-file line counter</span>
+0075             data_line = textscan(text_line, <span class="string">'%f'</span>);
+0076             AQDdat_mat(meta_dim,data_line_no,:) = data_line{1};
+0077             data_line_no = data_line_no + 1; <span class="comment">% Increment the local data_line counter</span>
+0078         <span class="keyword">end</span>
+0079        
+0080         text_line = fgetl(fid); <span class="comment">% Get a new line to feed back into the while loop test</span>
+0081         text_line_no = text_line_no+1; <span class="comment">% Increment the whole-file line counter</span>
+0082         meta_dim = meta_dim+1; <span class="comment">% and increment the meta_dim counter</span>
+0083     <span class="keyword">end</span>
+0084 <span class="keyword">end</span>
+0085 
+0086 fclose(fid);
+0087 
+0088 <span class="comment">%% Converting to MATLAB datetime and finding duplicates</span>
+0089 datevector = cell2mat(AQDdat_raw_meta(:,[3,1,2,4,5,6]));
+0090 datetime = datenum(double(datevector));
+0091 <span class="comment">% Looking for double ups in datetimes...</span>
+0092 <span class="comment">% This is probably caused by the wavebursts (profiles can't be taken while</span>
+0093 <span class="comment">% the wavebursts are underway)</span>
+0094 <span class="comment">% The ASCII output function of AquaPro seems to just duplicate the next 'good' profile to fill the gap.</span>
+0095 <span class="comment">% e.g. if 1715 is missing, there will be two (identical) readings for 1730.</span>
+0096 [~, m, ~] = unique(datetime, <span class="string">'last'</span>);
+0097 
+0098 <span class="comment">% Dropping double ups before processing...</span>
+0099 datetime = datetime(m);
+0100 datevector = datevector(m,:);
+0101 
+0102 AQDdat_mat = AQDdat_mat(m,:,:);
+0103 AQDdat_raw_meta = AQDdat_raw_meta(m,:,:);
+0104 
+0105 <span class="comment">%% Generating output</span>
+0106 <span class="comment">% Ideally this would be dymanic i.e. read from the .hdr file.  Oh well.</span>
+0107 AQDdat_mat_out = struct(<span class="keyword">...</span>
+0108     <span class="string">'datetime'</span>, datetime, <span class="keyword">...</span>
+0109     <span class="string">'datevector'</span>, datevector, <span class="keyword">...</span>
+0110     <span class="string">'error_code'</span>, {AQDdat_raw_meta(:,7)}, <span class="keyword">...</span>
+0111     <span class="string">'status_code'</span>, {AQDdat_raw_meta(:,8)}, <span class="keyword">...</span>
+0112     <span class="string">'batt_volt_v'</span>, cell2mat(AQDdat_raw_meta(:,9)), <span class="keyword">...</span>
+0113     <span class="string">'heading_deg'</span>, cell2mat(AQDdat_raw_meta(:,11)), <span class="keyword">...</span>
+0114     <span class="string">'pitch_deg'</span>, cell2mat(AQDdat_raw_meta(:,12)), <span class="keyword">...</span>
+0115     <span class="string">'roll_deg'</span>, cell2mat(AQDdat_raw_meta(:,13)), <span class="keyword">...</span>
+0116     <span class="string">'pressure_dbar'</span>, cell2mat(AQDdat_raw_meta(:,14)), <span class="keyword">...</span>
+0117     <span class="string">'temp_degC'</span>, cell2mat(AQDdat_raw_meta(:,15))<span class="keyword">...</span>
+0118     );
+0119 <span class="comment">% Appending the profile data from above...</span>
+0120 AQDdat_mat_out.profile = AQDdat_mat;
+0121 
+0122 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Thu 06-Jun-2013 11:05:07 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

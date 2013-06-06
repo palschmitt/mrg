@@ -1,0 +1,286 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of mrg_create_dfsu</title>
+  <meta name="keywords" content="mrg_create_dfsu">
+  <meta name="description" content="Takes a mesh file and produces a DFSU file filled with very simple data.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../index.html">Home</a> &gt;  <a href="#">mrg</a> &gt; <a href="index.html">MRG_MIKE</a> &gt; mrg_create_dfsu.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../index.html"><img alt="<" border="0" src="../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for mrg\MRG_MIKE&nbsp;<img alt=">" border="0" src="../../right.png"></a></td></tr></table>-->
+
+<h1>mrg_create_dfsu
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>Takes a mesh file and produces a DFSU file filled with very simple data.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function mrg_create_dfsu(start_date, ntimesteps, timestep_sec, varargin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> Takes a mesh file and produces a DFSU file filled with very simple data.
+
+ INPUT
+   start_date      A date vector (e.g. [2012, 12, 01, 23, 35, 00] specifying
+                   the start date for the DFSU output
+   ntimesteps      A numeric value specifying the number of timesteps in
+                   the output.
+   timestep_sec    A numeric value specifying the timestep in seconds
+
+   ...             Optional input specified using the ('keyword', value)
+                   syntax.  Can be any of:
+       nitems      An optional integer specifying the number of items in
+                   the output file.  Defualts to 1.  See NOTES.
+       base        An optional numerical value specifying the baseline
+                   value at each time point. Also specifys the value at
+                   timestep 1.  Defaults to 0. See NOTES.
+       increment   An optional numerical value specifying the increment to add at
+                   each timestep.  Defaults to 0.  See NOTES.
+       isarea      A logical indicating if the file is to be used as a
+                   decoupled area file
+
+ OUTPUT
+   NO OUTPUT AT CONSOLE
+   Produces a DFSU file with the layout prescribed by the mesh file.
+
+ NOTES
+   This function will create a DFSU file with the spatial dimensions
+   specified by a .mesh file.  Each element is filled with:
+
+       base+increment*timestep
+
+   Timestep in this instance is the zero-indexed timestep in the DFSU
+   file.  So so using, base = 10 and increment=1:
+       The first timestep  = 10
+       The second timestep = 11
+       The third timestep  = 12
+       ...
+       The nth timestep    = 10+(n-1)
+
+   Note all output items are undefined, but this can esily be changed in
+   the data utility tool in MIKE Zero.
+
+ REQUIREMENTS
+   Requires the MIKE Matlab toolbox.  Tested with v. 20110304
+   mrg_effing_factory from the MRG_MIKE_toolbox
+
+ LICENCE
+   Created by Daniel Pritchard (www.pritchard.co)
+   Distributed under a creative commons CC BY-SA licence.  See here:
+   http://creativecommons.org/licenses/by-sa/3.0/
+
+ DEVELOPMENT
+   v 1.0   2011-09-01
+           Initial attempt.  DP
+   v 1.1   2012-09-05
+           Documentation.  DP
+   v 1.2   2012-09-18
+           Using varargin, adding 'base', adding 'nitems'. DP
+           Changed defualts to zero everywhere at all timesteps. DP
+           Syntax changes.  DP
+
+ TODO
+   Item types.
+   Different data for different items</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="mrg_effing_factory.html" class="code" title="function factory = mrg_effing_factory()">mrg_effing_factory</a>	Load the f**king factory.</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function mrg_create_dfsu(start_date, ntimesteps, timestep_sec, varargin)</a>
+0002 <span class="comment">% Takes a mesh file and produces a DFSU file filled with very simple data.</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% INPUT</span>
+0005 <span class="comment">%   start_date      A date vector (e.g. [2012, 12, 01, 23, 35, 00] specifying</span>
+0006 <span class="comment">%                   the start date for the DFSU output</span>
+0007 <span class="comment">%   ntimesteps      A numeric value specifying the number of timesteps in</span>
+0008 <span class="comment">%                   the output.</span>
+0009 <span class="comment">%   timestep_sec    A numeric value specifying the timestep in seconds</span>
+0010 <span class="comment">%</span>
+0011 <span class="comment">%   ...             Optional input specified using the ('keyword', value)</span>
+0012 <span class="comment">%                   syntax.  Can be any of:</span>
+0013 <span class="comment">%       nitems      An optional integer specifying the number of items in</span>
+0014 <span class="comment">%                   the output file.  Defualts to 1.  See NOTES.</span>
+0015 <span class="comment">%       base        An optional numerical value specifying the baseline</span>
+0016 <span class="comment">%                   value at each time point. Also specifys the value at</span>
+0017 <span class="comment">%                   timestep 1.  Defaults to 0. See NOTES.</span>
+0018 <span class="comment">%       increment   An optional numerical value specifying the increment to add at</span>
+0019 <span class="comment">%                   each timestep.  Defaults to 0.  See NOTES.</span>
+0020 <span class="comment">%       isarea      A logical indicating if the file is to be used as a</span>
+0021 <span class="comment">%                   decoupled area file</span>
+0022 <span class="comment">%</span>
+0023 <span class="comment">% OUTPUT</span>
+0024 <span class="comment">%   NO OUTPUT AT CONSOLE</span>
+0025 <span class="comment">%   Produces a DFSU file with the layout prescribed by the mesh file.</span>
+0026 <span class="comment">%</span>
+0027 <span class="comment">% NOTES</span>
+0028 <span class="comment">%   This function will create a DFSU file with the spatial dimensions</span>
+0029 <span class="comment">%   specified by a .mesh file.  Each element is filled with:</span>
+0030 <span class="comment">%</span>
+0031 <span class="comment">%       base+increment*timestep</span>
+0032 <span class="comment">%</span>
+0033 <span class="comment">%   Timestep in this instance is the zero-indexed timestep in the DFSU</span>
+0034 <span class="comment">%   file.  So so using, base = 10 and increment=1:</span>
+0035 <span class="comment">%       The first timestep  = 10</span>
+0036 <span class="comment">%       The second timestep = 11</span>
+0037 <span class="comment">%       The third timestep  = 12</span>
+0038 <span class="comment">%       ...</span>
+0039 <span class="comment">%       The nth timestep    = 10+(n-1)</span>
+0040 <span class="comment">%</span>
+0041 <span class="comment">%   Note all output items are undefined, but this can esily be changed in</span>
+0042 <span class="comment">%   the data utility tool in MIKE Zero.</span>
+0043 <span class="comment">%</span>
+0044 <span class="comment">% REQUIREMENTS</span>
+0045 <span class="comment">%   Requires the MIKE Matlab toolbox.  Tested with v. 20110304</span>
+0046 <span class="comment">%   mrg_effing_factory from the MRG_MIKE_toolbox</span>
+0047 <span class="comment">%</span>
+0048 <span class="comment">% LICENCE</span>
+0049 <span class="comment">%   Created by Daniel Pritchard (www.pritchard.co)</span>
+0050 <span class="comment">%   Distributed under a creative commons CC BY-SA licence.  See here:</span>
+0051 <span class="comment">%   http://creativecommons.org/licenses/by-sa/3.0/</span>
+0052 <span class="comment">%</span>
+0053 <span class="comment">% DEVELOPMENT</span>
+0054 <span class="comment">%   v 1.0   2011-09-01</span>
+0055 <span class="comment">%           Initial attempt.  DP</span>
+0056 <span class="comment">%   v 1.1   2012-09-05</span>
+0057 <span class="comment">%           Documentation.  DP</span>
+0058 <span class="comment">%   v 1.2   2012-09-18</span>
+0059 <span class="comment">%           Using varargin, adding 'base', adding 'nitems'. DP</span>
+0060 <span class="comment">%           Changed defualts to zero everywhere at all timesteps. DP</span>
+0061 <span class="comment">%           Syntax changes.  DP</span>
+0062 <span class="comment">%</span>
+0063 <span class="comment">% TODO</span>
+0064 <span class="comment">%   Item types.</span>
+0065 <span class="comment">%   Different data for different items</span>
+0066 
+0067 <span class="comment">%% Checking input</span>
+0068 <span class="comment">% Number of optional input arguments must be less than 2 x options...</span>
+0069 numvarargs = length(varargin);
+0070 <span class="keyword">if</span> numvarargs &gt; 8
+0071     error(<span class="string">'mrg_create_dfsu:TooManyInputs'</span>, <span class="string">'Requires at most 4 optional inputs'</span>);
+0072 <span class="keyword">end</span>
+0073 
+0074 <span class="comment">% Set defaults on optional inputs</span>
+0075 nitems = 1;
+0076 base = 0;
+0077 increment = 0;
+0078 isarea = 0;
+0079 
+0080 <span class="keyword">while</span> ~isempty(varargin),
+0081     <span class="keyword">if</span> ischar(varargin{1})
+0082         <span class="keyword">switch</span> lower(varargin{1}(1:3))
+0083             <span class="keyword">case</span> <span class="string">'nit'</span>
+0084                 nitems = varargin{2};
+0085             <span class="keyword">case</span> <span class="string">'bas'</span>
+0086                 base = varargin{2};
+0087             <span class="keyword">case</span> <span class="string">'inc'</span>
+0088                 increment = varargin{2};
+0089             <span class="keyword">case</span> <span class="string">'isa'</span>
+0090                 isarea = 1;
+0091             <span class="keyword">otherwise</span>
+0092                 error(<span class="string">'mrg_create_dfsu:VariableInputNotHandled'</span>,<span class="string">'You provided an optional input not handled by the function.'</span>);
+0093         <span class="keyword">end</span>
+0094     <span class="keyword">else</span>
+0095         error(<span class="string">'mrg_create_dfsu:VariableInputFail'</span>,<span class="string">'Optional inputs must be specified using the (keyword, value) syntax'</span>);
+0096     <span class="keyword">end</span>
+0097     varargin([1 2])=[]; 
+0098 <span class="keyword">end</span>
+0099 
+0100 <span class="comment">% Input checks</span>
+0101 <span class="keyword">if</span> ~(isnumeric(start_date)&amp;&amp;length(start_date)==6);
+0102     error(<span class="string">'mrg:InputFail'</span>,<span class="string">'start_date must be date vector!'</span>);
+0103 <span class="keyword">end</span>
+0104 
+0105 <span class="keyword">if</span> ~isnumeric(increment)
+0106     error(<span class="string">'mrg:InputFail'</span>,<span class="string">'increment must be a number!'</span>);
+0107 <span class="keyword">end</span>
+0108 <span class="comment">%%</span>
+0109 NET.addAssembly(<span class="string">'DHI.Generic.MikeZero'</span>);
+0110 import DHI.Generic.MikeZero.*
+0111 import DHI.Generic.MikeZero.DFS.*;
+0112 import DHI.Generic.MikeZero.DFS.dfsu.*;
+0113 
+0114 <span class="comment">%% Get mesh</span>
+0115 return_path = cd;
+0116 [filename, path] = uigetfile(<span class="string">'.mesh'</span>,<span class="string">'Select a MESH file to act as DFSU template'</span>);
+0117 cd(path);
+0118 
+0119 [Elmts,Nodes,proj] = mzReadMesh(filename);
+0120 X = Nodes(:,1);
+0121 Y = Nodes(:,2);
+0122 Z = Nodes(:,3);
+0123 code = Nodes(:,4);
+0124 
+0125 <span class="comment">%% If area is requested, calculate element centered waterdepths</span>
+0126 <span class="comment">% There is some discrepenacy here between this and the values form the</span>
+0127 <span class="comment">% model...  Anyway.  It'll do for now.</span>
+0128 <span class="keyword">if</span> isarea
+0129     [~,~,ze] = mzCalcElmtCenterCoords(Elmts,X,Y,Z);
+0130     twd = ze*-1;
+0131     twd(twd&lt;0) = 0;
+0132 <span class="keyword">end</span>
+0133 
+0134 <span class="comment">%% Create a new empty dfsu file object</span>
+0135 factory = <a href="mrg_effing_factory.html" class="code" title="function factory = mrg_effing_factory()">mrg_effing_factory</a>();
+0136 builder = DfsuBuilder.Create(DfsuFileType.Dfsu2D);
+0137 
+0138 <span class="comment">% Create a temporal definition matching input file</span>
+0139 start = System.DateTime(start_date(1),start_date(2),start_date(3),start_date(4),start_date(5),start_date(6));
+0140 builder.SetTimeInfo(start, timestep_sec);
+0141 
+0142 <span class="comment">% Create a spatial defition based on mesh input file</span>
+0143 builder.SetNodes(NET.convertArray(single(X)),NET.convertArray(single(Y)),NET.convertArray(single(Z)),NET.convertArray(int32(code)));
+0144 builder.SetElements(mzNetToElmtArray(Elmts));
+0145 builder.SetProjection(factory.CreateProjection(proj))
+0146 
+0147 <span class="comment">% Add item(s)</span>
+0148 <span class="keyword">for</span> a = 1:nitems
+0149     builder.AddDynamicItem([<span class="string">'MATLAB_generated_'</span>,num2str(a)],DHI.Generic.MikeZero.eumQuantity(eumItem.eumIItemUndefined,eumUnit.eumUUnitUndefined));
+0150 <span class="keyword">end</span>
+0151 
+0152 <span class="comment">% Create the file - make it ready for data</span>
+0153 new_filename = [filename(1:end-5),<span class="string">'_mod.dfsu'</span>];
+0154 [filename, path] = uiputfile(<span class="string">'.dfsu'</span>, <span class="string">'Select a location for the DFSU file'</span>, new_filename);
+0155 cd(path)
+0156 dfs = builder.CreateFile(filename);
+0157 
+0158 <span class="comment">%% Put some data in the file</span>
+0159 <span class="keyword">for</span> i=0:ntimesteps-1
+0160     <span class="comment">% NB: The first timestep is just filled with base (becuase the</span>
+0161     <span class="comment">% increment is multiplied by 'i' which is zero)</span>
+0162     data = repmat(base,dfs.NumberOfElements,1)+increment*i;
+0163     <span class="keyword">for</span> j=1:nitems
+0164         <span class="comment">% NB: All items get the same data, unless isarea is true!</span>
+0165         <span class="keyword">if</span> j==1&amp;&amp;isarea==1
+0166             dfs.WriteItemTimeStepNext(0, NET.convertArray(single(twd)));
+0167         <span class="keyword">else</span>
+0168             dfs.WriteItemTimeStepNext(0, NET.convertArray(single(data)));
+0169         <span class="keyword">end</span>
+0170     <span class="keyword">end</span>
+0171 <span class="keyword">end</span>
+0172 
+0173 <span class="comment">% Close the file</span>
+0174 dfs.Close();
+0175 cd(return_path)
+0176 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Thu 06-Jun-2013 11:05:07 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

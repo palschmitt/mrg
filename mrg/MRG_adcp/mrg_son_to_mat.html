@@ -1,0 +1,180 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of mrg_son_to_mat</title>
+  <meta name="keywords" content="mrg_son_to_mat">
+  <meta name="description" content="TODO: Documentation">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../index.html">Home</a> &gt;  <a href="#">mrg</a> &gt; <a href="index.html">MRG_adcp</a> &gt; mrg_son_to_mat.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../index.html"><img alt="<" border="0" src="../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for mrg\MRG_adcp&nbsp;<img alt=">" border="0" src="../../right.png"></a></td></tr></table>-->
+
+<h1>mrg_son_to_mat
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>TODO: Documentation</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function [sontek_struc] = mrg_son_to_mat(seabedtosen, blankdist, cellsize, varargin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> TODO: Documentation
+ Reads SONTEK ASCII files.  
+ Outputs a MATLAB structure and (optionally) a DFS0 file.  
+% Check input</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../mrg/MRG_MIKE/mrg_mat_to_DFS0.html" class="code" title="function mrg_mat_to_DFS0(padded_struct, datetime_name, variables)">mrg_mat_to_DFS0</a>	Process MATLAB data to a DFS0 file.</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [sontek_struc] = mrg_son_to_mat(seabedtosen, blankdist, cellsize, varargin)</a>
+0002 <span class="comment">% TODO: Documentation</span>
+0003 <span class="comment">% Reads SONTEK ASCII files.</span>
+0004 <span class="comment">% Outputs a MATLAB structure and (optionally) a DFS0 file.</span>
+0005 <span class="comment">%% Check input</span>
+0006 <span class="keyword">if</span> ~exist(<span class="string">'seabedtosen'</span>, <span class="string">'var'</span>)
+0007     error(<span class="string">'Distance from seabed to sensor (seabedtosen) not defined.'</span>)
+0008 <span class="keyword">end</span>
+0009 
+0010 <span class="keyword">if</span> ~exist(<span class="string">'blankdist'</span>, <span class="string">'var'</span>)
+0011     error(<span class="string">'Blanking distance (blankdist) not defined.'</span>)
+0012 <span class="keyword">end</span>
+0013 
+0014 <span class="keyword">if</span> ~exist(<span class="string">'cellsize'</span>, <span class="string">'var'</span>)
+0015     error(<span class="string">'Cell size (cellsize) not defined.'</span>)
+0016 <span class="keyword">end</span>
+0017 
+0018 <span class="comment">% Number of optional input arguments must be less than 2 x options...</span>
+0019 numvarargs = length(varargin);
+0020 <span class="keyword">if</span> numvarargs &gt; 6
+0021     error(<span class="string">'mrg:InputFail'</span>, <span class="string">'Requires at most 3 optional inputs'</span>);
+0022 <span class="keyword">end</span>
+0023 
+0024 <span class="comment">% Set optional input defualts</span>
+0025 dfs0 = 1;
+0026 <span class="comment">% Read optional inputs</span>
+0027 <span class="keyword">while</span> ~isempty(varargin),
+0028     <span class="keyword">if</span> ischar(varargin{1})
+0029         <span class="keyword">switch</span> lower(varargin{1}(1:4))
+0030             <span class="keyword">case</span> <span class="string">'dfs0'</span>
+0031                 dfs0 = varargin{2};
+0032             <span class="keyword">case</span> <span class="string">'file'</span>
+0033                 filename = varargin{2};
+0034             <span class="keyword">case</span> <span class="string">'beam'</span>
+0035                 beamangle = varargin{2};
+0036             <span class="keyword">otherwise</span>
+0037                 error(<span class="string">'mrg:InputFail'</span>,<span class="string">'You provided an optional input not handled by the function.'</span>);
+0038         <span class="keyword">end</span>
+0039     <span class="keyword">else</span>
+0040         error(<span class="string">'mrg:InputFail'</span>,<span class="string">'Optional inputs must be specified using the (keyword, value) syntax'</span>);
+0041     <span class="keyword">end</span>
+0042     varargin([1 2])=[]; 
+0043 <span class="keyword">end</span>
+0044 
+0045 <span class="keyword">if</span> ~exist(<span class="string">'filename'</span>, <span class="string">'var'</span>)
+0046     [filename, path] = uigetfile({<span class="string">'*.hdr'</span>,<span class="string">'SonTek header files (*.hdr)'</span>}, <span class="string">'Please select the hdr file'</span>);
+0047     old_path = cd();
+0048     cd(path);
+0049 <span class="keyword">else</span> 
+0050     old_path = cd();
+0051 <span class="keyword">end</span>
+0052 
+0053 <span class="keyword">if</span> ~exist(<span class="string">'beamangle'</span>, <span class="string">'var'</span>)
+0054     warning(<span class="string">'mrg:DefaultValue'</span>, <span class="string">'Beam angle (beamangle) not defined. Defaulting to 25 degrees'</span>)
+0055     beamangle = 25;
+0056 <span class="keyword">end</span>
+0057 
+0058 <span class="comment">%% Read and process the header file</span>
+0059 son_hdr = dlmread(filename);
+0060 hdr_names = {<span class="string">'profile'</span>, <span class="string">'year'</span>, <span class="string">'month'</span>, <span class="string">'day'</span>, <span class="string">'hour'</span>, <span class="string">'min'</span>, <span class="string">'sec'</span>,<span class="keyword">...</span>
+0061     <span class="string">'no_samples'</span>, <span class="string">'speed'</span>, <span class="string">'mean_heading'</span>, <span class="string">'mean_pitch'</span>, <span class="string">'mean_roll'</span>, <span class="keyword">...</span>
+0062     <span class="string">'mean_temp'</span>, <span class="string">'mean_pressure'</span>, <span class="string">'stdev_heading'</span>, <span class="string">'stdev_pitch'</span>, <span class="keyword">...</span>
+0063     <span class="string">'stdev_roll'</span>, <span class="string">'stdev_temp'</span>, <span class="string">'stdev_pressure'</span>, <span class="string">'volts'</span>};
+0064 sontek_struc = struct();
+0065 <span class="keyword">for</span> n=1:length(hdr_names)
+0066     sontek_struc.(hdr_names{n}) = son_hdr(:,n);
+0067 <span class="keyword">end</span>
+0068 
+0069 <span class="comment">%% Create a MATLAB DT Object</span>
+0070 sontek_struc.m_dt = datenum(sontek_struc.year, sontek_struc.month,<span class="keyword">...</span>
+0071     sontek_struc.day, sontek_struc.hour, sontek_struc.min, sontek_struc.sec);
+0072 
+0073 <span class="comment">%% Read and process the 've', 'vn' and 'vu' files</span>
+0074 filename_ve = [filename(1:end-3),<span class="string">'ve'</span>];
+0075 filename_vn = [filename(1:end-3),<span class="string">'vn'</span>];
+0076 filename_vu = [filename(1:end-3),<span class="string">'vu'</span>];
+0077 
+0078 <span class="comment">% Now, read the ve (i.e. velocity east) file and add it to the struct</span>
+0079 son_ve = dlmread(filename_ve);
+0080 sontek_struc.vel_east = son_ve(:,2:end)/100;
+0081 
+0082 <span class="comment">% Now, read the vn (i.e. velocity north) file and add it to the struct</span>
+0083 son_vn = dlmread(filename_vn);
+0084 sontek_struc.vel_north = son_vn(:,2:end)/100;
+0085 
+0086 <span class="comment">% Now, read the vu (i.e. velocity up) file and add it to the struct</span>
+0087 son_vu = dlmread(filename_vu);
+0088 sontek_struc.vel_up = son_vu(:,2:end)/100;
+0089 
+0090 <span class="comment">% Warn about unit conversion</span>
+0091 warning(<span class="string">'mrg:UnitChange'</span>, <span class="string">'The velocity components have been divided by 100 to convert from cm/s to m/s'</span>)
+0092 
+0093 <span class="comment">%% Trim bins that are out of the water (sidelobe flitering)</span>
+0094 cell_distances = 1:1:length(sontek_struc.vel_east(1,:));
+0095 cell_distances = cell_distances*cellsize+blankdist;
+0096 
+0097 <span class="keyword">for</span> n = 1:length(sontek_struc.profile)
+0098     <span class="comment">% Test pressure = cutoff depth for cells tested against the</span>
+0099     <span class="comment">% cell_distances variable which is the distance from the sensor to the</span>
+0100     <span class="comment">% top of the cell</span>
+0101     test_pressure = sontek_struc.mean_pressure(n)*cos(deg2rad(beamangle))-seabedtosen;
+0102     above = cell_distances &gt; test_pressure;
+0103     sontek_struc.vel_east(n,above) = NaN;
+0104     sontek_struc.vel_north(n,above) = NaN;
+0105     sontek_struc.vel_up(n,above) = NaN;
+0106 <span class="keyword">end</span>
+0107 
+0108 <span class="comment">%% Calculate Depth Averaged U and V components</span>
+0109 <span class="keyword">for</span> n = 1:length(sontek_struc.profile)
+0110     sontek_struc.da_vel_east(n,:) = nanmean(sontek_struc.vel_east(n,:));
+0111     sontek_struc.da_vel_north(n,:) = nanmean(sontek_struc.vel_north(n,:));
+0112 <span class="keyword">end</span>
+0113 
+0114 <span class="comment">%% Calculate some depth averaged speed and directions</span>
+0115 [theta, rho] = cart2pol(sontek_struc.da_vel_north, sontek_struc.da_vel_east);
+0116 sontek_struc.da_curr_speed = rho;
+0117 dir = theta*180/pi;
+0118 index = ~(dir &gt; 0);
+0119 sontek_struc.da_dir = dir + index * 360;
+0120 
+0121 <span class="comment">%% Create a DFS0 File</span>
+0122 <span class="keyword">if</span> dfs0
+0123     variables = {<span class="string">'da_vel_east'</span>, <span class="string">'da_vel_north'</span>, <span class="string">'da_curr_speed'</span>, <span class="string">'da_dir'</span>, <span class="string">'mean_pressure'</span>};
+0124     <a href="../../mrg/MRG_MIKE/mrg_mat_to_DFS0.html" class="code" title="function mrg_mat_to_DFS0(padded_struct, datetime_name, variables)">mrg_mat_to_DFS0</a>(sontek_struc, <span class="string">'m_dt'</span>, variables);
+0125 <span class="keyword">end</span>
+0126 
+0127 <span class="comment">%% End</span>
+0128 cd(old_path)
+0129 
+0130 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Thu 06-Jun-2013 11:05:07 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

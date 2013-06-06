@@ -1,0 +1,219 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of mrg_dfs0_cart_to_pol</title>
+  <meta name="keywords" content="mrg_dfs0_cart_to_pol">
+  <meta name="description" content="Converts U and V velcity data into magnitude and direction in a DFSO file">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../index.html">Home</a> &gt;  <a href="#">mrg</a> &gt; <a href="index.html">MRG_MIKE</a> &gt; mrg_dfs0_cart_to_pol.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../index.html"><img alt="<" border="0" src="../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for mrg\MRG_MIKE&nbsp;<img alt=">" border="0" src="../../right.png"></a></td></tr></table>-->
+
+<h1>mrg_dfs0_cart_to_pol
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>Converts U and V velcity data into magnitude and direction in a DFSO file</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function mrg_dfs0_cart_to_pol(curr_east,curr_north,wind) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> Converts U and V velcity data into magnitude and direction in a DFSO file
+
+ INPUT
+   curr_east   A positive integer defining the column number for the U
+               component in the DFS0 file.
+   curr_north  A positive integer defining the column number for the V 
+               component in the DFS0 file.
+   wind        Is either 1 if the input data is wind data, otherwise 0.  
+               See NOTES.
+ 
+ OUTPUT
+   NO OUTPUT AT CONSOLE
+   Produces a DFS0 file with '_dir' appended to the filename.
+   Resulting file contains ONLY the calculated speed and direction.  
+
+ REQUIREMENTS
+   Requires the MIKE Matlab toolbox.  Tested with v. 20110304.
+   Requires mrg_read_dfs0
+
+ NOTES
+   Wind directions are typically specifiy as the direction the wind is
+   *coming from*, whereas other directions (e.g. currents) are specified
+   as the direction they are *going to*.  The wind input allows for this,
+   and ensures wind directions are calcuated correctly.
+
+ LICENCE
+   Created B. Elsaesser (b.elsaesser@qub.ac.uk)
+   Updated by Daniel Pritchard (www.pritchard.co)
+   Original copyright B. Elsaesser.  Rewritten code distributed under a
+   creative commons CC BY-SA licence. See here:
+   http://creativecommons.org/licenses/by-sa/3.0/
+
+ DEVELOPMENT
+   v 1.0   March 2012
+           BE. Revised for Mike2011 version and new Read_dfs0 function output.
+           BE. Modified item description &amp; additional check in input (equidistance time axis)
+   v 1.1   2012-09-12
+           DP. Documentation.  Name change.  
+           DP. Uses modified mrg_read_dfs0 function.  Modified to account
+           for the fact that mrg_read_dfs0 no longer CD's the MATLAB
+           working directory in the original directory.
+ TODO
+   Update to use .NET frameworks for writing files.  Better yet, create a
+   generic mrg_write_dfs0 function and pass the file saving on to this
+   function.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="mrg_read_dfs0.html" class="code" title="function RecData = mrg_read_dfs0(varargin)">mrg_read_dfs0</a>	Read all entries from a DFS0 file.</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function mrg_dfs0_cart_to_pol(curr_east,curr_north,wind)</a>
+0002 <span class="comment">% Converts U and V velcity data into magnitude and direction in a DFSO file</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% INPUT</span>
+0005 <span class="comment">%   curr_east   A positive integer defining the column number for the U</span>
+0006 <span class="comment">%               component in the DFS0 file.</span>
+0007 <span class="comment">%   curr_north  A positive integer defining the column number for the V</span>
+0008 <span class="comment">%               component in the DFS0 file.</span>
+0009 <span class="comment">%   wind        Is either 1 if the input data is wind data, otherwise 0.</span>
+0010 <span class="comment">%               See NOTES.</span>
+0011 <span class="comment">%</span>
+0012 <span class="comment">% OUTPUT</span>
+0013 <span class="comment">%   NO OUTPUT AT CONSOLE</span>
+0014 <span class="comment">%   Produces a DFS0 file with '_dir' appended to the filename.</span>
+0015 <span class="comment">%   Resulting file contains ONLY the calculated speed and direction.</span>
+0016 <span class="comment">%</span>
+0017 <span class="comment">% REQUIREMENTS</span>
+0018 <span class="comment">%   Requires the MIKE Matlab toolbox.  Tested with v. 20110304.</span>
+0019 <span class="comment">%   Requires mrg_read_dfs0</span>
+0020 <span class="comment">%</span>
+0021 <span class="comment">% NOTES</span>
+0022 <span class="comment">%   Wind directions are typically specifiy as the direction the wind is</span>
+0023 <span class="comment">%   *coming from*, whereas other directions (e.g. currents) are specified</span>
+0024 <span class="comment">%   as the direction they are *going to*.  The wind input allows for this,</span>
+0025 <span class="comment">%   and ensures wind directions are calcuated correctly.</span>
+0026 <span class="comment">%</span>
+0027 <span class="comment">% LICENCE</span>
+0028 <span class="comment">%   Created B. Elsaesser (b.elsaesser@qub.ac.uk)</span>
+0029 <span class="comment">%   Updated by Daniel Pritchard (www.pritchard.co)</span>
+0030 <span class="comment">%   Original copyright B. Elsaesser.  Rewritten code distributed under a</span>
+0031 <span class="comment">%   creative commons CC BY-SA licence. See here:</span>
+0032 <span class="comment">%   http://creativecommons.org/licenses/by-sa/3.0/</span>
+0033 <span class="comment">%</span>
+0034 <span class="comment">% DEVELOPMENT</span>
+0035 <span class="comment">%   v 1.0   March 2012</span>
+0036 <span class="comment">%           BE. Revised for Mike2011 version and new Read_dfs0 function output.</span>
+0037 <span class="comment">%           BE. Modified item description &amp; additional check in input (equidistance time axis)</span>
+0038 <span class="comment">%   v 1.1   2012-09-12</span>
+0039 <span class="comment">%           DP. Documentation.  Name change.</span>
+0040 <span class="comment">%           DP. Uses modified mrg_read_dfs0 function.  Modified to account</span>
+0041 <span class="comment">%           for the fact that mrg_read_dfs0 no longer CD's the MATLAB</span>
+0042 <span class="comment">%           working directory in the original directory.</span>
+0043 <span class="comment">% TODO</span>
+0044 <span class="comment">%   Update to use .NET frameworks for writing files.  Better yet, create a</span>
+0045 <span class="comment">%   generic mrg_write_dfs0 function and pass the file saving on to this</span>
+0046 <span class="comment">%   function.</span>
+0047 
+0048 <span class="comment">%% read data</span>
+0049 
+0050 RecData = <a href="mrg_read_dfs0.html" class="code" title="function RecData = mrg_read_dfs0(varargin)">mrg_read_dfs0</a>;
+0051 
+0052 <span class="comment">%check defined data columns</span>
+0053 <span class="keyword">if</span> curr_east &gt; length(RecData.items(:,1))
+0054     msgbox(<span class="string">'Column number for east item is greater than number of items'</span>)
+0055     <span class="keyword">return</span>;
+0056 <span class="keyword">elseif</span> curr_north &gt; length(RecData.items(:,1))
+0057     msgbox(<span class="string">'Column number for north item is greater than number of items'</span>)
+0058     <span class="keyword">return</span>;
+0059 <span class="keyword">end</span>
+0060 
+0061 <span class="comment">% check that file is equidistant time axis file</span>
+0062 <span class="keyword">if</span> RecData.dTime(2) &lt; 0
+0063     msgbox(<span class="string">'File has a non equidistant time axis, please convert &amp; try again'</span>)
+0064     <span class="keyword">return</span>
+0065 <span class="keyword">end</span>
+0066 
+0067 data = RecData.dData(:,[curr_east curr_north]);
+0068 
+0069 <span class="comment">%% convert direction and current into polar coordinates</span>
+0070 <span class="comment">% matlab polar coodinates are orientated against the clock and start at</span>
+0071 <span class="comment">% East with zero, this is taken care of by swapping x,y in the function</span>
+0072 <span class="comment">% (output)</span>
+0073 [new_data(:,1),new_data(:,2)] = cart2pol(data(:,2),data(:,1));
+0074 
+0075 <span class="keyword">if</span> wind
+0076     new_data(:,1) = new_data(:,1)*180/pi + 180;
+0077 <span class="keyword">else</span>
+0078     new_data(:,1) = new_data(:,1)*180/pi;
+0079     index = ~(new_data(:,1) &gt; 0);
+0080     new_data(:,1) = new_data(:,1)+ index * 360;
+0081 <span class="keyword">end</span>
+0082 
+0083 <span class="comment">%% write data to dfs0 file</span>
+0084 <span class="comment">% prepare all inpout parameter to dfs0 file</span>
+0085 filename = [RecData.Fullname(1:end-5),<span class="string">'_dir.dfs0'</span>];
+0086 
+0087 dfs0 = dfsTSO(filename,1);
+0088 
+0089 <span class="comment">% Set a file title</span>
+0090 set(dfs0,<span class="string">'filetitle'</span>,RecData.title);
+0091 
+0092 <span class="comment">% Set startdate and timestep interval</span>
+0093 set(dfs0,<span class="string">'startdate'</span>,datevec(RecData.dTime(4)));
+0094 set(dfs0,<span class="string">'timestep'</span>,[0 0 0 0 0 RecData.dTime(2)]);
+0095 
+0096 <span class="comment">% Add number of timesteps</span>
+0097 addTimesteps(dfs0,RecData.dTime(1));
+0098 
+0099 <span class="comment">% define item description</span>
+0100 <span class="keyword">if</span> wind
+0101     def_descript1 = cellstr(<span class="string">'derived wind direction'</span>);
+0102     def_descript2 = cellstr(<span class="string">'derived wind speed'</span>);
+0103 <span class="keyword">else</span>
+0104     def_descript1 = cellstr(<span class="string">'derived current direction'</span>);
+0105     def_descript2 = cellstr(<span class="string">'derived current speed'</span>);
+0106 <span class="keyword">end</span>
+0107 
+0108 idescript1 = inputdlg(<span class="string">'Enter item description'</span>,<span class="string">'Direction component'</span>,<span class="keyword">...</span>
+0109     1,def_descript1);
+0110 idescript2 = inputdlg(<span class="string">'Enter item description'</span>,<span class="string">'Magnitude component'</span>,<span class="keyword">...</span>
+0111     1,def_descript2);
+0112 
+0113 <span class="comment">% Add Items &amp; define item structure</span>
+0114 <span class="keyword">if</span> wind
+0115     addItem(dfs0,char(idescript1),<span class="string">'Wind direction'</span>,<span class="string">'deg'</span>);
+0116     addItem(dfs0,char(idescript2),<span class="string">'Wind Speed'</span>,<span class="string">'m/s'</span>);
+0117 <span class="keyword">else</span>
+0118     addItem(dfs0,char(idescript1),<span class="string">'Current direction'</span>,<span class="string">'deg'</span>);
+0119     addItem(dfs0,char(idescript2),<span class="string">'Current magnitude'</span>,<span class="string">'m/s'</span>);
+0120 <span class="keyword">end</span>
+0121 
+0122 <span class="comment">% write data to file</span>
+0123 dfs0(1)  = single(new_data(:,1));
+0124 dfs0(2)  = single(new_data(:,2));
+0125 
+0126 <span class="comment">% Save and close files</span>
+0127 save(dfs0);
+0128 close(dfs0);</pre></div>
+<hr><address>Generated on Thu 06-Jun-2013 11:05:07 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

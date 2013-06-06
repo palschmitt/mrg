@@ -1,0 +1,74 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of mrg_effing_factory</title>
+  <meta name="keywords" content="mrg_effing_factory">
+  <meta name="description" content="Load the f**king factory.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../index.html">Home</a> &gt;  <a href="#">mrg</a> &gt; <a href="index.html">MRG_MIKE</a> &gt; mrg_effing_factory.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../index.html"><img alt="<" border="0" src="../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for mrg\MRG_MIKE&nbsp;<img alt=">" border="0" src="../../right.png"></a></td></tr></table>-->
+
+<h1>mrg_effing_factory
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>Load the f**king factory.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function factory = mrg_effing_factory() </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> Load the f**king factory.
+
+ A function to generate the factory object required in a number of MIKE
+ toolbox examples.  Should prevent errors in functions.  
+
+ USAGE
+   Wherever a MIKE toolbox example shows this:
+       factory = DfsFactory();
+   replace it with this:
+       factory = mrg_effing_factory();</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="mrg_create_dfsu.html" class="code" title="function mrg_create_dfsu(start_date, ntimesteps, timestep_sec, varargin)">mrg_create_dfsu</a>	Takes a mesh file and produces a DFSU file filled with very simple data.</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function factory = mrg_effing_factory()</a>
+0002 <span class="comment">% Load the f**king factory.</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% A function to generate the factory object required in a number of MIKE</span>
+0005 <span class="comment">% toolbox examples.  Should prevent errors in functions.</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">% USAGE</span>
+0008 <span class="comment">%   Wherever a MIKE toolbox example shows this:</span>
+0009 <span class="comment">%       factory = DfsFactory();</span>
+0010 <span class="comment">%   replace it with this:</span>
+0011 <span class="comment">%       factory = mrg_effing_factory();</span>
+0012 <span class="comment">%</span>
+0013 
+0014 NET.addAssembly(<span class="string">'DHI.Generic.MikeZero.DFS'</span>);
+0015 import DHI.Generic.MikeZero.DFS.*;
+0016 factory = DfsFactory();
+0017 
+0018 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Thu 06-Jun-2013 11:05:07 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

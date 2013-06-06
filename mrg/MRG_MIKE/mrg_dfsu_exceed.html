@@ -1,0 +1,321 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of mrg_dfsu_exceed</title>
+  <meta name="keywords" content="mrg_dfsu_exceed">
+  <meta name="description" content="Performs an exceedance analysis on a DFSU files.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../index.html">Home</a> &gt;  <a href="#">mrg</a> &gt; <a href="index.html">MRG_MIKE</a> &gt; mrg_dfsu_exceed.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../index.html"><img alt="<" border="0" src="../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for mrg\MRG_MIKE&nbsp;<img alt=">" border="0" src="../../right.png"></a></td></tr></table>-->
+
+<h1>mrg_dfsu_exceed
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>Performs an exceedance analysis on a DFSU files.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function [data] = mrg_dfsu_exceed(exceed, chunk_size) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> Performs an exceedance analysis on a DFSU files.
+
+ INPUT
+   exceed          A vector representing the quantiles to extract.  
+                   Defualts to [.10 .20 .30 .50]
+   chunk_size      An integer specifying the size of the 'chunks' to break 
+                   the file up into.  Larger chunks may speed up runtime, 
+                   but very large chunks may lead to out of memory errors.  
+                   Defaults to 1000.
+
+ OUTPUT
+   A MATLAB structure with n+3 items, where n is the number of 
+   quantiles requested, plus X, Y and Z data from the DFSU file.  
+   A CSV file, derived from the MATLAB structure.
+   A DFSU file with the same spatial extent as the analysed file, but 
+   with a single timestep will be written as 'inputfilename_exceed.dfsu'.
+
+ REQUIREMENTS
+   The DHI/MIKE Matlab toolbox 2011 (developed with v. 20110304)
+   mrg_struct_to_csv.m function (assuming you want csv output, else it will be skipped)
+
+ NOTES
+     Extracts quantiles from each cell in a DFSU file (i.e. an analysis
+   through the time domain).
+
+ LICENCE
+   Created by Daniel Pritchard (www.pritchard.co)
+   Distributed under a creative commons CC BY-SA licence. See here:
+   http://creativecommons.org/licenses/by-sa/3.0/
+
+ DEVELOPMENT
+   v 1.0   6/7/2012
+           DP. Initial attempt and distribution. 
+   v 1.1   12/7/2012
+           DP. Added better filenaming and removed error-causing 'factory' call. 
+   v 1.2   19/7/2012
+           DP. Now deals with delete values by using single() throughout (use of
+           double() causes issues with rounding).
+           DP. Much better estimation of time remaining.
+   v 1.3   14/02/2013
+           DP. Documentation</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../mrg/MRG_utilities/mrg_struct_to_csv.html" class="code" title="function mrg_struct_to_csv(in, outfile)">mrg_struct_to_csv</a>	A function to output a structure to csv.  Currently can only deal with a</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [data] = mrg_dfsu_exceed(exceed, chunk_size)</a>
+0002 <span class="comment">% Performs an exceedance analysis on a DFSU files.</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% INPUT</span>
+0005 <span class="comment">%   exceed          A vector representing the quantiles to extract.</span>
+0006 <span class="comment">%                   Defualts to [.10 .20 .30 .50]</span>
+0007 <span class="comment">%   chunk_size      An integer specifying the size of the 'chunks' to break</span>
+0008 <span class="comment">%                   the file up into.  Larger chunks may speed up runtime,</span>
+0009 <span class="comment">%                   but very large chunks may lead to out of memory errors.</span>
+0010 <span class="comment">%                   Defaults to 1000.</span>
+0011 <span class="comment">%</span>
+0012 <span class="comment">% OUTPUT</span>
+0013 <span class="comment">%   A MATLAB structure with n+3 items, where n is the number of</span>
+0014 <span class="comment">%   quantiles requested, plus X, Y and Z data from the DFSU file.</span>
+0015 <span class="comment">%   A CSV file, derived from the MATLAB structure.</span>
+0016 <span class="comment">%   A DFSU file with the same spatial extent as the analysed file, but</span>
+0017 <span class="comment">%   with a single timestep will be written as 'inputfilename_exceed.dfsu'.</span>
+0018 <span class="comment">%</span>
+0019 <span class="comment">% REQUIREMENTS</span>
+0020 <span class="comment">%   The DHI/MIKE Matlab toolbox 2011 (developed with v. 20110304)</span>
+0021 <span class="comment">%   mrg_struct_to_csv.m function (assuming you want csv output, else it will be skipped)</span>
+0022 <span class="comment">%</span>
+0023 <span class="comment">% NOTES</span>
+0024 <span class="comment">%     Extracts quantiles from each cell in a DFSU file (i.e. an analysis</span>
+0025 <span class="comment">%   through the time domain).</span>
+0026 <span class="comment">%</span>
+0027 <span class="comment">% LICENCE</span>
+0028 <span class="comment">%   Created by Daniel Pritchard (www.pritchard.co)</span>
+0029 <span class="comment">%   Distributed under a creative commons CC BY-SA licence. See here:</span>
+0030 <span class="comment">%   http://creativecommons.org/licenses/by-sa/3.0/</span>
+0031 <span class="comment">%</span>
+0032 <span class="comment">% DEVELOPMENT</span>
+0033 <span class="comment">%   v 1.0   6/7/2012</span>
+0034 <span class="comment">%           DP. Initial attempt and distribution.</span>
+0035 <span class="comment">%   v 1.1   12/7/2012</span>
+0036 <span class="comment">%           DP. Added better filenaming and removed error-causing 'factory' call.</span>
+0037 <span class="comment">%   v 1.2   19/7/2012</span>
+0038 <span class="comment">%           DP. Now deals with delete values by using single() throughout (use of</span>
+0039 <span class="comment">%           double() causes issues with rounding).</span>
+0040 <span class="comment">%           DP. Much better estimation of time remaining.</span>
+0041 <span class="comment">%   v 1.3   14/02/2013</span>
+0042 <span class="comment">%           DP. Documentation</span>
+0043 
+0044 <span class="comment">%% Go!</span>
+0045 <span class="comment">% Exceedance values (a vector)</span>
+0046 <span class="keyword">if</span> ~exist(<span class="string">'exceed'</span>, <span class="string">'var'</span>)
+0047     exceed = [.10 .20 .30 .50];
+0048 <span class="keyword">end</span>
+0049 
+0050 <span class="comment">% Chunk size...</span>
+0051 <span class="keyword">if</span> ~exist(<span class="string">'chunk_size'</span>, <span class="string">'var'</span>)
+0052     chunk_size = 1000;
+0053 <span class="keyword">end</span>
+0054 
+0055 <span class="comment">% Load libraries</span>
+0056 NET.addAssembly(<span class="string">'DHI.Generic.MikeZero.DFS'</span>);
+0057 NET.addAssembly(<span class="string">'DHI.Generic.MikeZero.EUM'</span>);
+0058 import DHI.Generic.MikeZero.DFS.*;
+0059 import DHI.Generic.MikeZero.DFS.dfsu.*;
+0060 import DHI.Generic.MikeZero.*
+0061 
+0062 <span class="comment">% Get file</span>
+0063 [filename,filepath] = uigetfile(<span class="string">'*.dfsu'</span>,<span class="string">'Select the .dfsu file to analyse'</span>);
+0064 infile = [filepath,filename];
+0065 dfsu_file = DfsFileFactory.DfsuFileOpen(infile);
+0066 
+0067 <span class="comment">% Read some item information</span>
+0068 items = {};
+0069 <span class="keyword">for</span> i = 0:dfsu_file.ItemInfo.Count-1
+0070     item = dfsu_file.ItemInfo.Item(i);
+0071     items{i+1,1} = char(item.Name);
+0072     items{i+1,2} = char(item.Quantity.Unit);
+0073     items{i+1,3} = char(item.Quantity.UnitAbbreviation);
+0074 <span class="keyword">end</span>
+0075 
+0076 <span class="comment">% Ask the user to select the item to process</span>
+0077 choice = menu(sprintf(<span class="string">'Which of these objects do you want to process?'</span>),items{:,1}, <span class="string">'Ummm... None of the above!'</span>);
+0078 <span class="keyword">if</span> choice == 0 || choice == length(items(:,1))+1
+0079     error(<span class="string">'Do or do not.  There is no try.'</span>);
+0080 <span class="keyword">else</span>
+0081     dfsu_item = choice; <span class="comment">% A number delimiting the item position in the DFSU file.  The same as mat_item (i.e. no zero indexing).  i.e. this is completly redundant!</span>
+0082 <span class="keyword">end</span>
+0083 
+0084 nsteps = dfsu_file.NumberOfTimeSteps;
+0085 nelements = dfsu_file.NumberOfElements;
+0086 
+0087 <span class="comment">% Setup the output object</span>
+0088 data = struct();
+0089 
+0090 <span class="comment">% Add some nicities, like X, Y, Z</span>
+0091 node_x = single(dfsu_file.X);
+0092 node_y = single(dfsu_file.Y);
+0093 node_z = single(dfsu_file.Z);
+0094 ele_table = mzNetFromElmtArray(dfsu_file.ElementTable);
+0095 [ele_X,ele_Y,ele_Z] = mzCalcElmtCenterCoords(ele_table,node_x,node_y,node_z);
+0096 data.X = ele_X.';
+0097 data.Y = ele_Y.';
+0098 data.Z = ele_Z.';
+0099 
+0100 <span class="comment">% Add (empty) objects for the exceedance values</span>
+0101 <span class="keyword">for</span> a = 1:length(exceed)
+0102     data.([<span class="string">'quant_'</span>,regexprep(num2str(exceed(a)),<span class="string">'\.'</span>,<span class="string">''</span>)]) = NaN(1,nelements, <span class="string">'single'</span>);
+0103 <span class="keyword">end</span>
+0104 
+0105 <span class="comment">% Pre-allocate some memory, and setup our sequence...</span>
+0106 temp_single_ts = NaN(1,nelements, <span class="string">'single'</span>);
+0107 temp_el_chunk = NaN(chunk_size,nsteps, <span class="string">'single'</span>);
+0108 seq = int32([1:chunk_size:nelements]);
+0109 seq_len = size(seq,2);
+0110 seq(end+1) = int32(nelements);
+0111 
+0112 <span class="comment">% Single delete value</span>
+0113 sDelete = single(1e-35);
+0114 
+0115 <span class="comment">% Timings are for debugging and display only...</span>
+0116 timings = NaN(1,seq_len);
+0117 
+0118 <span class="comment">% loc = Keeping track of the loctaion in the data file where we are at</span>
+0119 loc = 0;
+0120 <span class="comment">% OK this is ugly, but I think I implimented this after 4 beers at about</span>
+0121 <span class="comment">% 10 pm sitting at a coffee table in a rented apartment in Denmark.  If you</span>
+0122 <span class="comment">% wanted professional code you wouldn't rely on drunk, tired, algal</span>
+0123 <span class="comment">% physiologists!</span>
+0124 
+0125 <span class="keyword">for</span> j=1:seq_len
+0126     tic
+0127     <span class="keyword">if</span> j == seq_len
+0128         <span class="comment">%This is the last chunk.  Act accordingly.</span>
+0129         last_chunk_size = seq(j+1)-seq(j)+1;
+0130         temp_el_chunk = ones(last_chunk_size,nsteps);
+0131         <span class="keyword">for</span> i=0:nsteps-1
+0132             temp_single_ts(:) = single(dfsu_file.ReadItemTimeStep(dfsu_item,i).Data)';
+0133             temp_el_chunk(:,i+1) = temp_single_ts(seq(j):seq(j+1));
+0134         <span class="keyword">end</span>
+0135         <span class="comment">% OK now we have a chunk.  We need to process it...</span>
+0136         nel_in_chunk = size(temp_el_chunk,1);
+0137         disp([<span class="string">'Processing elements '</span>, num2str(loc+1), <span class="string">' to '</span> num2str(size(temp_el_chunk,1)+loc), <span class="string">' of '</span>, num2str(nelements)])
+0138         
+0139         <span class="comment">% Convert delete values to NANs</span>
+0140         temp_el_chunk(temp_el_chunk==sDelete) = NaN;
+0141         
+0142         <span class="comment">% Do the heavy lifting</span>
+0143         quant = quantile(temp_el_chunk,exceed,2);
+0144 
+0145         <span class="keyword">for</span> a = 1:size(quant,2)
+0146             data.([<span class="string">'quant_'</span>,regexprep(num2str(exceed(a)),<span class="string">'\.'</span>,<span class="string">''</span>)])(loc+1:size(temp_el_chunk,1)+loc) = quant(:,a);
+0147         <span class="keyword">end</span>
+0148         loc = size(temp_el_chunk,1)+loc;
+0149     <span class="keyword">else</span>
+0150         <span class="keyword">for</span> i=0:nsteps-1
+0151             temp_single_ts(:) = single(dfsu_file.ReadItemTimeStep(dfsu_item,i).Data)';
+0152             temp_el_chunk(:,i+1) = temp_single_ts(seq(j):seq(j+1)-1);
+0153         <span class="keyword">end</span>
+0154         <span class="comment">% OK now we have a chunk.  We need to process it...</span>
+0155         nel_in_chunk = size(temp_el_chunk,1);
+0156         <span class="comment">%disp(['Processing element ', num2str(j), ' of ', num2str(nelements), ' in chunk ', num2str(j), ' of ', num2str(seq_len), '.'])</span>
+0157         disp([<span class="string">'Processing elements '</span>, num2str(loc+1), <span class="string">' to '</span> num2str(size(temp_el_chunk,1)+loc), <span class="string">' of '</span>, num2str(nelements)])
+0158         
+0159         <span class="comment">% Convert delete values to NANs</span>
+0160         temp_el_chunk(temp_el_chunk==sDelete) = NaN;
+0161         
+0162         quant = quantile(temp_el_chunk,exceed,2);
+0163         <span class="keyword">for</span> a = 1:size(quant,2)
+0164             data.([<span class="string">'quant_'</span>,regexprep(num2str(exceed(a)),<span class="string">'\.'</span>,<span class="string">''</span>)])(loc+1:size(temp_el_chunk,1)+loc) = quant(:,a);
+0165         <span class="keyword">end</span>
+0166         loc = size(temp_el_chunk,1)+loc;
+0167     <span class="keyword">end</span>
+0168     timings(j) = toc;
+0169     mean_time_sec = nanmean(timings);
+0170     remain = (seq_len-j)*mean_time_sec/60;
+0171     disp([<span class="string">'Approximatly '</span>, num2str(remain), <span class="string">' minutes remain.'</span>])
+0172 <span class="keyword">end</span>
+0173 
+0174 <span class="comment">%% Here we write out a CSV file</span>
+0175 <span class="keyword">if</span> exist(<span class="string">'mrg_struct_to_csv.m'</span>, <span class="string">'file'</span>) == 2
+0176     disp(<span class="string">'Writing exceedance values to a CSV file.'</span>)
+0177     out_file = [filename(1:end-5),<span class="string">'_'</span>,regexprep(items{choice,1},<span class="string">' '</span>,<span class="string">''</span>),<span class="string">'_exceed.csv'</span>];
+0178     out_file_full = [filepath,out_file];
+0179     <a href="../../mrg/MRG_utilities/mrg_struct_to_csv.html" class="code" title="function mrg_struct_to_csv(in, outfile)">mrg_struct_to_csv</a>(data, out_file_full);
+0180     disp([<span class="string">'Output CSV file ('</span>, out_file, <span class="string">') written successfully.'</span>])
+0181 <span class="keyword">else</span>
+0182     disp(<span class="string">'mrg_struct_to_csv.m not avilable in your search path.  No CSV file will be generated.'</span>)
+0183 <span class="keyword">end</span>
+0184 
+0185 <span class="comment">%% Here we  stick data into a DFSU file</span>
+0186 <span class="comment">% First DRAFT of the DFSU - based output...  Seems to work OK...</span>
+0187 disp(<span class="string">'Writing exceedance values to a DFSU file.'</span>)
+0188 
+0189 <span class="comment">% Apparently we need to load these again...  Hmmm... TODO: Figure this out</span>
+0190 NET.addAssembly(<span class="string">'DHI.Generic.MikeZero.DFS'</span>);
+0191 NET.addAssembly(<span class="string">'DHI.Generic.MikeZero.EUM'</span>);
+0192 import DHI.Generic.MikeZero.DFS.*;
+0193 import DHI.Generic.MikeZero.DFS.dfsu.*;
+0194 import DHI.Generic.MikeZero.*
+0195 import DHI.Generic.MikeZero.EUM.*
+0196 
+0197 builder = DfsuBuilder.Create(DfsuFileType.Dfsu2D);
+0198 builder.SetTimeInfo(dfsu_file.StartDateTime, 1);
+0199 builder.SetNodes(dfsu_file.X,dfsu_file.Y,dfsu_file.Z,dfsu_file.Code);
+0200 builder.SetElements(dfsu_file.ElementTable);
+0201 builder.SetProjection(dfsu_file.Projection);
+0202 
+0203 data_names = fieldnames(data);
+0204 
+0205 <span class="comment">% Being lazy here - no need to write out X, Y and Z - TODO: Remove this...</span>
+0206 <span class="keyword">for</span> n = 1:length(data_names)
+0207     builder.AddDynamicItem(data_names{n},eumQuantity(eumItem.eumIItemUndefined,eumUnit.eumUUnitUndefined));
+0208 <span class="keyword">end</span>
+0209 
+0210 out_file = [filename(1:end-5),<span class="string">'_'</span>,regexprep(items{choice,1},<span class="string">' '</span>,<span class="string">''</span>),<span class="string">'_exceed'</span>, filename(end-4:end)];
+0211 out_file_full = [filepath,out_file];
+0212 
+0213 dfs_out = builder.CreateFile(out_file_full);
+0214 
+0215 <span class="keyword">if</span> ~(size(data.(data_names{1}), 2) == dfs_out.NumberOfElements)
+0216     error([<span class="string">'Somehow there is a mismatch in the number of elements in the '</span>,<span class="keyword">...</span>
+0217         <span class="string">'DFSU output file and the length of the data.  This is an error'</span>])
+0218 <span class="keyword">end</span>
+0219 
+0220 <span class="comment">% Follow up from above - Re: Layzness</span>
+0221 <span class="keyword">for</span> n = 1:length(data_names)
+0222     data_out = single(data.(data_names{n}));
+0223     data_out(isnan(data_out)) = sDelete;
+0224     dfs_out.WriteItemTimeStepNext(n-1, NET.convertArray(data_out));
+0225 <span class="keyword">end</span>
+0226 
+0227 dfs_out.Close()
+0228 disp([<span class="string">'Output DFSU file ('</span>, out_file, <span class="string">') written successfully.'</span>])
+0229 
+0230 <span class="keyword">end</span>
+0231 
+0232 
+0233 
+0234</pre></div>
+<hr><address>Generated on Thu 06-Jun-2013 11:05:07 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

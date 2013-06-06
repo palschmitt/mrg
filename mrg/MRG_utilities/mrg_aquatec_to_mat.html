@@ -1,0 +1,127 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of mrg_aquatec_to_mat</title>
+  <meta name="keywords" content="mrg_aquatec_to_mat">
+  <meta name="description" content="Read aquatec data into MATLAB">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../index.html">Home</a> &gt;  <a href="#">mrg</a> &gt; <a href="index.html">MRG_utilities</a> &gt; mrg_aquatec_to_mat.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../index.html"><img alt="<" border="0" src="../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for mrg\MRG_utilities&nbsp;<img alt=">" border="0" src="../../right.png"></a></td></tr></table>-->
+
+<h1>mrg_aquatec_to_mat
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>Read aquatec data into MATLAB</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function tide_data = mrg_aquatec_to_mat(filename) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> Read aquatec data into MATLAB
+
+ INPUT
+   filename    Optional string specifying the name of the file to read.
+
+ OUTPUT
+   tide_data   A MATLAB matrix with three columns:
+                   tide_data(:,1) - MATLAB datetime
+                   tide_data(:,2) - temperature
+                   tide_data(:,2) - pressure
+
+ NOTES
+   This function will fail if there are non-equidistant time steps in the
+   input file.
+
+ DEVELOPMENT
+   v 1.0   2012
+           BE.  Initial development (as Aquatec2dfs0.m)
+   v 1.1   02/2013
+           Modfied to return MATLAB structure
+           DP.  Documentation. 
+
+ TODO
+   Include DFS0 functionality</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function tide_data = mrg_aquatec_to_mat(filename)</a>
+0002 <span class="comment">% Read aquatec data into MATLAB</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% INPUT</span>
+0005 <span class="comment">%   filename    Optional string specifying the name of the file to read.</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">% OUTPUT</span>
+0008 <span class="comment">%   tide_data   A MATLAB matrix with three columns:</span>
+0009 <span class="comment">%                   tide_data(:,1) - MATLAB datetime</span>
+0010 <span class="comment">%                   tide_data(:,2) - temperature</span>
+0011 <span class="comment">%                   tide_data(:,2) - pressure</span>
+0012 <span class="comment">%</span>
+0013 <span class="comment">% NOTES</span>
+0014 <span class="comment">%   This function will fail if there are non-equidistant time steps in the</span>
+0015 <span class="comment">%   input file.</span>
+0016 <span class="comment">%</span>
+0017 <span class="comment">% DEVELOPMENT</span>
+0018 <span class="comment">%   v 1.0   2012</span>
+0019 <span class="comment">%           BE.  Initial development (as Aquatec2dfs0.m)</span>
+0020 <span class="comment">%   v 1.1   02/2013</span>
+0021 <span class="comment">%           Modfied to return MATLAB structure</span>
+0022 <span class="comment">%           DP.  Documentation.</span>
+0023 <span class="comment">%</span>
+0024 <span class="comment">% TODO</span>
+0025 <span class="comment">%   Include DFS0 functionality</span>
+0026 
+0027 <span class="comment">%% Get file to read</span>
+0028 old_path = cd();
+0029 <span class="keyword">if</span> ~exist(<span class="string">'filename'</span>, <span class="string">'var'</span>)
+0030     [filename,path] = uigetfile(<span class="string">'*.csv'</span>,<span class="string">'Open *.csv AQUATEC file'</span>);
+0031     cd(path);
+0032     <span class="keyword">if</span> isempty(filename)
+0033         <span class="keyword">return</span>
+0034     <span class="keyword">end</span>
+0035 <span class="keyword">end</span>
+0036 <span class="comment">%%  Imports data from the specified file</span>
+0037 DELIMITER = <span class="string">','</span>;
+0038 HEADERLINES = 18;
+0039 <span class="comment">% Import the file</span>
+0040 newData1 = importdata(filename, DELIMITER, HEADERLINES);
+0041 warning(<span class="string">'mrg:DefaultValue'</span>, [mfilename <span class="string">' is assuming you have 18 header rows.'</span>]);
+0042 <span class="comment">%% read date and time if possible</span>
+0043 <span class="keyword">try</span>
+0044     tide_data = datenum(newData1.textdata(HEADERLINES+1:<span class="keyword">end</span>,2),<span class="string">'HH:MM:SS dd/mm/yyyy'</span>);
+0045 <span class="keyword">catch</span>
+0046     error(<span class="string">'Error reading date/time from file'</span>);
+0047 <span class="keyword">end</span>
+0048 <span class="comment">% Check time step for equidistant spacing</span>
+0049 timestep = round((tide_data(2,1) - tide_data(1,1))*24*60);
+0050 t_steps = diff(tide_data(:,1))*24*60;
+0051 <span class="keyword">if</span> any(abs(t_steps - timestep)&gt;=1/60)
+0052     error(<span class="string">'Timestep is not equidistant in file!'</span>);
+0053 <span class="keyword">end</span>
+0054 <span class="comment">%% read data</span>
+0055 tide_data(:,2:3) = newData1.data(:,[2 4]);
+0056 cd(old_path);
+0057 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Thu 06-Jun-2013 11:05:07 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

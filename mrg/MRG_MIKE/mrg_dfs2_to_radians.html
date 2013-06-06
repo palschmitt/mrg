@@ -1,0 +1,146 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of mrg_dfs2_to_radians</title>
+  <meta name="keywords" content="mrg_dfs2_to_radians">
+  <meta name="description" content="Convert directions in a dfs2 file to radians.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../index.html">Home</a> &gt;  <a href="#">mrg</a> &gt; <a href="index.html">MRG_MIKE</a> &gt; mrg_dfs2_to_radians.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../index.html"><img alt="<" border="0" src="../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for mrg\MRG_MIKE&nbsp;<img alt=">" border="0" src="../../right.png"></a></td></tr></table>-->
+
+<h1>mrg_dfs2_to_radians
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>Convert directions in a dfs2 file to radians.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function mrg_dfs2_to_radians(item_no, filename) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> Convert directions in a dfs2 file to radians.
+
+ INPUT
+   item_no     An non-zero integer specifying the item in the DFS2 file
+               containing the direction data.
+   filename    An optional string specifying the name of the DFS2 to convert.
+
+ OUTPUT
+   NO OUTPUT AT CONSOLE
+   This function copies the original file and converts item specified by
+   'item_no' to radians.  It creates a DFS2 file with '_radians' 
+   appended to the filename.
+
+ NOTES
+   Created to address a bug in the DHI software which has now been fixed.
+
+ REQUIREMENTS
+   The DHI/MIKE Matlab toolbox 2011 (developed with v. 20110304)
+
+ LICENCE
+   Created by Daniel Pritchard (www.pritchard.co)
+   Distributed under a creative commons CC BY-SA licence. See here:
+   http://creativecommons.org/licenses/by-sa/3.0/
+
+ DEVELOPMENT
+   v 1.0   2012
+           DP. Initial attempt and distribution. 
+   v 1.1   14/02/2013
+           DP. Documentation. 
+ TODO 
+   Better parsing of input number.  Optional select of input item.
+   Do something about delete value handeling.  At the moment they are not
+       handeled at all, which is OK for ERA data only...</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function mrg_dfs2_to_radians(item_no, filename)</a>
+0002 <span class="comment">% Convert directions in a dfs2 file to radians.</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% INPUT</span>
+0005 <span class="comment">%   item_no     An non-zero integer specifying the item in the DFS2 file</span>
+0006 <span class="comment">%               containing the direction data.</span>
+0007 <span class="comment">%   filename    An optional string specifying the name of the DFS2 to convert.</span>
+0008 <span class="comment">%</span>
+0009 <span class="comment">% OUTPUT</span>
+0010 <span class="comment">%   NO OUTPUT AT CONSOLE</span>
+0011 <span class="comment">%   This function copies the original file and converts item specified by</span>
+0012 <span class="comment">%   'item_no' to radians.  It creates a DFS2 file with '_radians'</span>
+0013 <span class="comment">%   appended to the filename.</span>
+0014 <span class="comment">%</span>
+0015 <span class="comment">% NOTES</span>
+0016 <span class="comment">%   Created to address a bug in the DHI software which has now been fixed.</span>
+0017 <span class="comment">%</span>
+0018 <span class="comment">% REQUIREMENTS</span>
+0019 <span class="comment">%   The DHI/MIKE Matlab toolbox 2011 (developed with v. 20110304)</span>
+0020 <span class="comment">%</span>
+0021 <span class="comment">% LICENCE</span>
+0022 <span class="comment">%   Created by Daniel Pritchard (www.pritchard.co)</span>
+0023 <span class="comment">%   Distributed under a creative commons CC BY-SA licence. See here:</span>
+0024 <span class="comment">%   http://creativecommons.org/licenses/by-sa/3.0/</span>
+0025 <span class="comment">%</span>
+0026 <span class="comment">% DEVELOPMENT</span>
+0027 <span class="comment">%   v 1.0   2012</span>
+0028 <span class="comment">%           DP. Initial attempt and distribution.</span>
+0029 <span class="comment">%   v 1.1   14/02/2013</span>
+0030 <span class="comment">%           DP. Documentation.</span>
+0031 <span class="comment">% TODO</span>
+0032 <span class="comment">%   Better parsing of input number.  Optional select of input item.</span>
+0033 <span class="comment">%   Do something about delete value handeling.  At the moment they are not</span>
+0034 <span class="comment">%       handeled at all, which is OK for ERA data only...</span>
+0035 
+0036 <span class="comment">%% Load libraries</span>
+0037 NET.addAssembly(<span class="string">'DHI.Generic.MikeZero.DFS'</span>);
+0038 import DHI.Generic.MikeZero.DFS.*;
+0039 
+0040 <span class="comment">%% Sort out files</span>
+0041 <span class="keyword">if</span> (~exist(<span class="string">'filename'</span>, <span class="string">'var'</span>))
+0042     [file, path] = uigetfile(<span class="string">'*.dfs2'</span>, <span class="string">'Select a DFS2 file to convert'</span>);
+0043     filename = [path, file];
+0044 <span class="keyword">end</span>
+0045 
+0046 out_filename = [filename(1:end-5),<span class="string">'_radians'</span>, filename(end-4:end)];
+0047 
+0048 copyfile(filename, out_filename, <span class="string">'f'</span>);
+0049 
+0050 dfs2_in = DfsFileFactory.Dfs2FileOpen(filename);
+0051 dfs2_out = DfsFileFactory.Dfs2FileOpenEdit(out_filename);
+0052 
+0053 <span class="comment">%% Get some basic info</span>
+0054 nsteps = dfs2_in.FileInfo.TimeAxis.NumberOfTimeSteps;
+0055 
+0056 <span class="comment">%% Do the conversion and write out data</span>
+0057 <span class="keyword">for</span> i=0:nsteps-1
+0058     itemData = dfs2_in.ReadItemTimeStep(item_no,i);
+0059     out_data = degtorad(double(itemData.Data));
+0060     dfs2_out.WriteItemTimeStep(item_no,i,itemData.Time,NET.convertArray(single(out_data(:))));
+0061 <span class="keyword">end</span>
+0062 
+0063 <span class="comment">%% Finish up</span>
+0064 dfs2_in.Close();
+0065 dfs2_out.Close();
+0066 
+0067 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Thu 06-Jun-2013 11:05:07 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>
