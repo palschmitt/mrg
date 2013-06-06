@@ -1,3 +1,3 @@
-mrg:InputFail
-mrg:DefaultValue - Warning about silent setting of defualt values
+mrg:InputFail - The input was wrong
+mrg:DefaultValue - Warning about silent setting of default values
 mrg:UnitChange - Warning about silent unit changes
