@@ -216,10 +216,15 @@ builder.SetElements(dfsu_file.ElementTable);
 builder.SetProjection(dfsu_file.Projection);
 
 data_names = fieldnames(data);
+data_names(strmatch('X', data_names, 'exact'))=[];
+data_names(strmatch('Z', data_names, 'exact'))=[];
+data_names(strmatch('Y', data_names, 'exact'))=[];
 
 % Being lazy here - no need to write out X, Y and Z - TODO: Remove this...
+undef = eumQuantity(eumItem.eumIItemUndefined,eumUnit.eumUUnitUndefined);
+
 for n = 1:length(data_names)
-    builder.AddDynamicItem(data_names{n},eumQuantity(eumItem.eumIItemUndefined,eumUnit.eumUUnitUndefined));
+    builder.AddDynamicItem(data_names{n},undef);
 end
 
 out_file = [filename(1:end-5),'_',regexprep(items{choice,1},' ',''),'_stats', filename(end-4:end)];
