@@ -19,6 +19,8 @@ function mrg_struct_to_csv(in, outfile)
 %           DP.  Why does MATLAB not do this by defualt?
 %   v 1.1   November 2012
 %           DP.  Documentation.   
+%   v 1.2   DP. Silently strips ',' from strings
+%   v 1.3   DP. Quoting string is nicer, lets do that.
 %
 % TODO
 %   Catch input.  Prompt user for filename if not present.  
@@ -59,14 +61,15 @@ for n = 1:nrow
         val = in.(names{m})(n);
         if iscell(val)
             if isnumeric(val{:})
-                fprintf(fid, '%d,', val{:});
+                fprintf(fid, '%f,', val{:});
             elseif ischar(val{:})
-                fprintf(fid, '%s,', val{:});
+                %fprintf(fid, '%s,', strrep(val{:}, ',', ''));
+                fprintf(fid, '"%s",', val{:});
             else
                 error('Cannot handle a cell array which does not evaluate to either a number or a character')
             end
         elseif isnumeric(val)
-            fprintf(fid, '%d,', val(:));
+            fprintf(fid, '%f,', val(:));
         else
             error('Cannot handle something that contains things other than cell or numeric arrays')
         end
@@ -75,14 +78,14 @@ for n = 1:nrow
     val = in.(names{length(names)})(n);
     if iscell(val)
         if isnumeric(val{:})
-            fprintf(fid, '%d\n', val{:});
+            fprintf(fid, '%f\n', val{:});
         elseif ischar(val{:})
             fprintf(fid, '%s\n', val{:});
         else
             error('Cannot handle a cell array which does not evaluate to either a number or a character')
         end
     elseif isnumeric(val)
-        fprintf(fid, '%d\n', val(:));
+        fprintf(fid, '%f\n', val(:));
     else
         error('Cannot handle something that contains things other than cell or numeric arrays')
     end
