@@ -12,6 +12,6 @@ Much of this code is developed by the Students and Staff in the Marine Research 
 
 - Bjoern Elsaesser
 - Daniel Pritchard
-
+- Pal Schmitt
 [mrg]: http://www.qub.ac.uk/research-centres/eerc/
 [space]: http://www.qub.ac.uk/schools/SchoolofPlanningArchitectureandCivilEngineering/
