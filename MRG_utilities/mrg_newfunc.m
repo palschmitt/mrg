@@ -1,13 +1,40 @@
 function mrg_newfunc
-%UNTITLED2 Summary of this function goes here
-%   Detailed explanation goes here
+% Prompts for a new function name and location, and creates a MATLAB '.m'
+% with pre-filled (biolerplate) text for documentation.
+%
+% INPUT
+%   None. No input required.
+%
+% OUTPUT
+%   No output at console. Generates a file with pre-filled (boilerplate)
+%   text for function construction.  
+%
+% NOTES
+%   This function is intended to aid in the development of functions for
+%   the MRG toolbox by providing biolerplate text for important
+%   documentation.  
+%
+% AUTHORS
+%   Daniel Pritchard
+%
+% LICENCE
+%   Code distributed as part of the MRG toolbox from the Marine Research
+%   Group at Queens Univeristy Belfast (QUB) School of Planning
+%   Architecture and Civil Engineering (SPACE). Distributed under a
+%   creative commons CC BY-SA licence, retaining full copyright of the
+%   original authors.
+%
+%   http://creativecommons.org/licenses/by-sa/3.0/
+%   http://www.qub.ac.uk/space/
+%   http://www.qub.ac.uk/research-centres/eerc/
+%
+% DEVELOPMENT
+%   v 1.0   2013-08-15
+%           First version. DP.
+%           Documentation. DP.
+%
 
-
-% Please fill out the description line above and the sections below. At a
-% minimum please document the INPUT and OUTPUT sections. If additional
-% sections headings are justified (e.g WARNING) please add these too.
-
-
+%%
 [fname,fpath] = uiputfile('*.m', 'Enter a name and location for the function', 'mrg_FUNC_NAME.m');
 
 bptext = ['function [OUT1, OUT2] = %s(IN1, IN2)\r\n',...
@@ -27,6 +54,9 @@ bptext = ['function [OUT1, OUT2] = %s(IN1, IN2)\r\n',...
 '%%   OUT1  DESCRIPTION\r\n',...
 '%%   OUT2  DESCRIPTION\r\n',...
 '%%   If no output please state: NO OUTPUT AT CONSOLE\r\n',...
+'%%\r\n',...
+'%% USAGE\r\n',...
+'%%   Provide an example to show how the function should be used\r\n',...
 '%%\r\n',...
 '%% NOTES\r\n',...
 '%%   Additional (more verbose) documentation can go here.\r\n',...
