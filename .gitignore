@@ -166,3 +166,6 @@ pip-log.txt
 # MATLAB
 ######## 
 *.asv
+
+## Toolbox specific
+*.password
