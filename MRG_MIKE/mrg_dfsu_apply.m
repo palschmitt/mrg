@@ -2,7 +2,8 @@ function mrg_dfsu_apply(fhandle, varargin)
 % Applys an arbitary function (specified by fhandle) to a selected item in a DFSU file.  
 %
 % INPUT
-%   fhandle       A function handle, constucted using the '@' syntax
+%   fhandle       A function handle, constucted using the '@' syntax. See
+%                 'doc function_handle' for more information 
 %   ...           Optional items passed verbatium to the function specified
 %                 by fhandle
 %
@@ -10,12 +11,30 @@ function mrg_dfsu_apply(fhandle, varargin)
 %   NO OUTPUT TO CONSOLE
 %   Modifies a DFSU file directly.
 %
+% NOTES
+%   This function takes a DFSU file and loops through it
+%   timestep-by-timestep applying the function specified by fhandle. At
+%   each timestep, fhandle is supplied a vector with N values (where N is
+%   the number of elements in the domain).  The result, which must also be
+%   of length N, is written back to the DFSU file. Everything in varargin
+%   gets passed to fhandel, allowing the use of moderatly complex
+%   functions.
+%
+% USAGE
+%   func = @mrg_assign;
+%   % Every cell greater than -12.5 gets a value of 1
+%   mrg_dfsu_apply(func, '>', -12.5, 1);
+%   % Every cell less than -12.5 gets a value of 0 
+%   mrg_dfsu_apply(func, '<', -12.5, 0);
+%   % Every euqal to -12.5 gets a value of 1
+%   mrg_dfsu_apply(func, '=', -12.5, 1);
+%
 % REQUIREMENTS
-%   The DHI/MIKE Matlab toolbox 2011 (developed with v. 20110304)
+%   The DHI/MIKE Matlab toolbox 2011/13 (developed with v. 20130222)
 %
 % WARNING
 %  This modifies the DFSU file directly, ensure you copy the file first,
-%  before attempting to apply this function
+%  before attempting to apply this function.
 %
 % LICENCE
 %   Created by Daniel Pritchard (www.pritchard.co)
