@@ -79,6 +79,9 @@ while 1
         if verbosity > 0
             fprintf([msg,'\n\nNB: If you are reading this, do not touch this computer!\n\n']);
         end
+        % Create post-processed figures
+        mrg_met_pp
+        % End post-processing
     elseif length(ser_out) < 23
         % ser_out is not long enough to be real data, so we have the option
         % to get chatty to the user, if set in the call to
