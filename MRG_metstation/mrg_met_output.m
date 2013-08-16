@@ -82,7 +82,7 @@ DateS = datestr(K(1),'dd/mm/yyyy HH:MM:SS');
 fnameCSV = ['met_data_',datestr(date,'yyyy_mmm'),'.csv'];
 % If the CSV file doesn't exist, then write a header line...
 if ~exist(fnameCSV, 'file')
-    csv_hdr = ['DateTime,PAR,WindSpeed,WindDirection,AirPressure,AirTemp,TidalLevel,WaterTemp\r\n'];
+    csv_hdr = 'DateTime,PAR,WindSpeed,WindDirection,AirPressure,AirTemp,TidalLevel,WaterTemp\r\n';
     fileID_csv = fopen(fnameCSV,'a');
     fprintf(fileID_csv,csv_hdr);
     fclose(fileID_csv);
@@ -98,7 +98,7 @@ if position < 98 % Check length of string. If too short data is missing.
     fprintf(fileID_csv,csv_err);
     fclose(fileID_csv);
     % Report error
-    str = [DateS, ': ERROR 01 - The string was too short!'];
+    str = [DateS, ': ERROR 01 - The string was too short! Delete values written in place'];
     return
 end
 
@@ -106,7 +106,7 @@ if any(cellfun('isempty',C)) % Check if all cells contain a value.
     fileID_csv = fopen(fnameCSV,'a');
     fprintf(fileID_csv,csv_err);
     fclose(fileID_csv);
-    str = [DateS, ': ERROR 02 - Some values were missing!'];
+    str = [DateS, ': ERROR 02 - Some values were missing! Delete values written in place'];
     return
 end
 
