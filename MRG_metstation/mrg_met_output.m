@@ -164,7 +164,7 @@ try
         web_str = [DateS, ': WARNING. mrg_met_urlread returned: ', web_str];
     end
 catch err
-    web_str = [DateS, ': FAIL. mrg_met_urlread failed (possible timeout?). The error was: \r\n', err.message];
+    web_str = [DateS, ': FAIL. mrg_met_urlread failed (possible timeout?). The error was: ', err.message];
 end
 
 str = [str, '\r\n', web_str];
