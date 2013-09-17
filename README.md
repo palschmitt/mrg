@@ -2,7 +2,7 @@
 This is the readme file for the MATLAB toolbox under development by the [Marine Research Group (MRG)][mrg] at [QUB SPACE][space].
 
 ## Documentation
-[Documentation for this toolbox] is hosted here on GitHub in a [separate repository].  
+[Documentation for this toolbox][mrg_docs] is hosted here on GitHub in a [separate repository][mrg_docs_repo].  
 
 ## Licence
 Unless otherwise stated this code is released under a creative commons CC BY-SA licence. 
