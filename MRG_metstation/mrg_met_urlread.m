@@ -1,9 +1,10 @@
 function [output,status] = mrg_met_urlread(urlChar,method,params)
-% This is a drop-in replacement for urlread in the default MATLAB
-% insallation. This version adds a 90 second time out so that the calling
-% function doesn't hang when the website is unreachable. It includes a
-% version of urlreadwrite (a private function), copied verbatum but renamed
-% as mrg_met_urlreadwrite.
+% A drop-in replacement for urlread in the default MATLAB insallation. 
+%
+% This version adds a 90 second time out so that the calling function
+% doesn't hang when the website is unreachable. It includes a version of
+% urlreadwrite (a private function), copied verbatum but renamed as
+% mrg_met_urlreadwrite.
 %
 % v 1.0 24/01/2012 DP
 %       First version

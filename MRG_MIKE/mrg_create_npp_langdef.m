@@ -1,7 +1,8 @@
 function mrg_create_npp_langdef()
-% Creates a language definition file for NotePad++ by scanning the DHI
-% installation directory and extracting the information from the files it
-% finds there.
+% Creates a language definition file for NotePad++ 
+%
+% This function scans a user-selected directory (e.g. the DHI installation
+% directory) and extracts the information from the files it finds there.
 %
 % INPUT
 %   None. The user is prompted to select the

@@ -1,6 +1,5 @@
 function keywords = mrg_PFS_keywords
-% Scans a directory, reads all the ecolab, m21fm and plc files therein and
-% returns the [header] keywords
+% Reads all the ecolab, m21fm and plc files in a directory and returns the [header] keywords
 %
 % INPUT
 %   None. The user is prompted to select a directory which can be the DHI

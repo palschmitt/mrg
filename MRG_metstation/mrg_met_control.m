@@ -1,7 +1,8 @@
 function mrg_met_control(verbosity)
-% The core Metstation control file... This function opens a serial
-% connection and generates an infinite loop that reads incomming data and
-% processes it as required.
+% The core Metstation control file
+%
+% This function opens a serial connection and generates an infinite loop
+% that reads incomming data and processes it as required.
 %
 % INPUT
 %   verbosity   An integer specifying the level of output to the console.

@@ -1,11 +1,5 @@
 function mrg_met_pp(days)
-% DESCRIPTION. What does the function do?.
-%
-% -- Read and Delete -- 
-% Please fill out the description line above and the sections below. At a
-% minimum please document the INPUT and OUTPUT sections. If additional
-% sections headings are justified (e.g WARNING) please add these too.
-% -- Ends --
+% Plots metstation data for display by an external web application
 %
 % INPUT
 %   days    The number of days to display (defualt is 1)
@@ -14,12 +8,6 @@ function mrg_met_pp(days)
 %   NO OUTPUT AT CONSOLE
 %   Generates figures for wind-speed, wind direction, air temperature,
 %   water temperature, 
-%
-% USAGE
-%   Provide an example to show how the function should be used
-%
-% NOTES
-%   Additional (more verbose) documentation can go here.
 %
 % REQUIREMENTS
 %   Assumes you have MRG-metation formatted CSV files in the current

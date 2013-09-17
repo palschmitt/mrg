@@ -1,5 +1,5 @@
 function str = mrg_met_output(out)
-% A function to write met data to file(s) and upload to a webpage
+% Write met data to file(s) and upload to a webpage
 %
 % INPUT
 %   out     A string read from RS232 (by mrg_met_control) that will be 

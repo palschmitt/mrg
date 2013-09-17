@@ -1,6 +1,5 @@
 function gofstat = mrg_dfs0_gofstat(Pred_fname, Obs_fname)
-% Provides a wrapper arounf Clare Duggan's 'mrg_gofstat' code for use with 
-% MIKE DFS0 files
+% A wrapper around 'mrg_gofstat' code for use with MIKE DFS0 files
 %
 % INPUT
 %   Pred_fname  Optional. A filename for a DFS0 file to act as the
