@@ -24,6 +24,8 @@ function gofstat = mrg_gofstat(Pred,Obs)
 %               : The p-value on R
 %       Pbar : An n-by-1 vector. The nanmean of Pred
 %       Obar : An n-by-1 vector. The nanmean of Obs
+%		absPbar : An n-by-1 vector. The nanmean of abs(Pred)
+%		absObar : An n-by-1 vector. The nanmean of abs(Obs)
 %       bias : An n-by-4 matrix with
 %               : The nanmean of the pairwise differences
 %               : The nanmean of the absolute pairwise differences 
@@ -32,8 +34,10 @@ function gofstat = mrg_gofstat(Pred,Obs)
 %       RMS  : An n-by-3 matrix with
 %               : The root mean square
 %               : The scatter index (RMS/Obar)
+%               : The scatter index using abs of signal (RMS/abs(Obar))
 %               : The stdev of the differences (same as bias(:,3), above?)
-%       MEF  : An n-by-1 vector. The modelling efficency
+%       MEF  : An n-by-1 vector. The modelling efficency as per Stow 2009
+%       skill: An n-by-1 vector. The modelling skill as per Dias 2009
 %       RI   : An n-by-1 vector. The reliability index
 %
 %   Note that this uses the nanmean and nanstd functions to calculate the
@@ -49,10 +53,15 @@ function gofstat = mrg_gofstat(Pred,Obs)
 %       Friedrichs, M. A. M., Rose, K. A., and Wallhead, P.  2009.  Skill 
 %       assessment for coupled biological/physical models of marine systems.  
 %       Journal of Marine Systems, 76: 4--15.
+%   Dias, J. M., Sousa, M. C., Bertin, X., Fortunato, A. B., and Oliveira,
+%       A. 2009. Numerical modeling of the impact of the Ancao Inlet
+%       relocation (Ria Formosa, Portugal). Environmental modelling and
+%       software, 24: 711-725.
 %
 % AUTHORS
 %   Clare Duggan
 %   Daniel Pritchard
+%   Bjoern Elsaesser
 %
 % LICENCE
 %   Code distributed as part of the MRG toolbox from the Marine Research
@@ -75,7 +84,9 @@ function gofstat = mrg_gofstat(Pred,Obs)
 %   v 1.3   2013-08-15 DP.
 %           Fixed error in upper confidence interval.
 %           More documentation.
-%
+%   v 1.4   2013-10-01 BE.
+%           Added scatter index using absolute of obsbar and model skill.
+%           as per Dias et al.
 %% Function Begin!
 k1 = size(Pred);
 k2 = size(Obs);
@@ -99,6 +110,8 @@ for n = 1:k1(2);
     % mean of the different data sets
     gofstat.Pbar(n,1) = nanmean(Pred(1:end,n));
     gofstat.Obar(n,1) = nanmean(Obs(1:end,n));
+    gofstat.absPbar(n,1) = nanmean(abs(Pred(1:end,n)));
+    gofstat.absObar(n,1) = nanmean(abs(Obs(1:end,n)));
     
     % difference of the data sets
     delta = Pred(1:end,n) - Obs(1:end,n);
@@ -116,8 +129,10 @@ for n = 1:k1(2);
     gofstat.RMS(n,1) = sqrt(nanmean(delta.^2));
     % Scatter index
     gofstat.RMS(n,2) = gofstat.RMS(n,1)/gofstat.Obar(n,1);
+    % Scatter index using absolute
+    gofstat.RMS(n,3) = gofstat.RMS(n,1)/gofstat.absObar(n,1);
     % Standard deviation of the differences
-    gofstat.RMS(n,3) = sqrt(nanmean((delta - nanmean(delta)).^2));
+    gofstat.RMS(n,4) = sqrt(nanmean((delta - nanmean(delta)).^2));
     
     % MEF - the modeling efficiency
     % observations minus average of observations
@@ -128,6 +143,16 @@ for n = 1:k1(2);
     difmo2 = nansum(difmo);
     % MEF
     gofstat.MEF(n,1) =(difme2-difmo2)/difme2;
+    
+    % SKILL - the modeling skill
+    % observations minus average of observations
+    difsko = (Obs(1:end,n) - gofstat.Obar(n,1));
+    difskp = (Pred(1:end,n) - gofstat.Obar(n,1));
+    % sum of differences
+    difsk2 = nansum((difskp + difsko).^2);
+    
+    % MEF
+    gofstat.skill(n,1)=1-difmo2/difsk2;
     
     % RI - Reliability Index
     rel = (log(Obs(1:end,n)./Pred(1:end,n))).^2;
