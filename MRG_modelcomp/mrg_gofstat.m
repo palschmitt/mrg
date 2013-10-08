@@ -24,8 +24,8 @@ function gofstat = mrg_gofstat(Pred,Obs)
 %               : The p-value on R
 %       Pbar : An n-by-1 vector. The nanmean of Pred
 %       Obar : An n-by-1 vector. The nanmean of Obs
-%		absPbar : An n-by-1 vector. The nanmean of abs(Pred)
-%		absObar : An n-by-1 vector. The nanmean of abs(Obs)
+%       absPbar : An n-by-1 vector. The nanmean of abs(Pred)
+%       absObar : An n-by-1 vector. The nanmean of abs(Obs)
 %       bias : An n-by-4 matrix with
 %               : The nanmean of the pairwise differences
 %               : The nanmean of the absolute pairwise differences 
