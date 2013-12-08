@@ -1,28 +1,23 @@
 function mrg_gofstat2xls(gofstat)
-% this function provides a simple output of the goodness-of-fit statistics 
+% This function provides a simple output of the goodness-of-fit statistics 
 % as given by mrg_gofstat in structure format to xlsx file in a simple 
 % sheet format with some commenting and headers. 
 %
-% not pretty but works
-%
 % INPUT
-%   gofstat as provided by mrg_gofstat
+%   gofstat as provided by mrg_gofstat or mrg_dfs0_gofstat
 %
 % OUTPUT
-%    the excel file with two colums if one data set is used, or else more
+%    The excel file with two colums if one data set is used, or else more
 %
 % USAGE
-%   simply gte the gofstat output from mrg_gofstat and run the function
+%   Simply get the gofstat output from mrg_gofstat and run the function,
+%   e.g.
 %
-% NOTES
-%   Additional (more verbose) documentation can go here.
-%
-% REQUIREMENTS
-%   a structure of the same format as produced by mrg_gofstat
+%   out = mrg_dfs0_gofstat
+%   mrg_gofstat2xls(out)
 %
 % OCTAVE COMPATIBILITY
 %   Untested.
-%
 %
 % AUTHORS
 %   Bjoern Elsaesser @ QUB
@@ -43,7 +38,7 @@ function mrg_gofstat2xls(gofstat)
 %           First version. BE
 %
 % TODO
-%   make code prettier and faster...
+%   Make code prettier and faster
 %
 %
 %% not much to it!
