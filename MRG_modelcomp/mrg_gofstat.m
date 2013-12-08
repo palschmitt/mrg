@@ -87,11 +87,13 @@ function gofstat = mrg_gofstat(Pred,Obs)
 %   v 1.4   2013-10-01 BE.
 %           Added scatter index using absolute of obsbar and model skill.
 %           as per Dias et al.
+%   v 1.5   2013-10-23 BE
+%           corrected bug in size comparison
 %% Function Begin!
 k1 = size(Pred);
 k2 = size(Obs);
 
-if k1~=k2
+if any(k1~=k2)
     msgbox('Data sets are not the same size!');
     return
 end
