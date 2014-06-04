@@ -1,6 +1,7 @@
-function [out, outhead] = mrg_parse_metstation(fname, verify)
+function [out, outhead] = mrg_met_parse(fname, verify)
+% Parses weatherstation data using regular expressions
+
 % TODO: Documentation
-% Parses Weatherstation data
 % 01/02/2013 - Intial atempt DP
 
 if ~exist('verify', 'var')

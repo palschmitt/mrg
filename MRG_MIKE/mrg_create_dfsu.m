@@ -107,6 +107,7 @@ if ~isnumeric(increment)
 end
 %%
 NET.addAssembly('DHI.Generic.MikeZero');
+NET.addAssembly('DHI.Generic.MikeZero.EUM');
 import DHI.Generic.MikeZero.*
 import DHI.Generic.MikeZero.DFS.*;
 import DHI.Generic.MikeZero.DFS.dfsu.*;
@@ -132,7 +133,8 @@ if isarea
 end
 
 %% Create a new empty dfsu file object
-factory = mrg_effing_factory();
+%factory = mrg_effing_factory();
+factory = DfsFactory();
 builder = DfsuBuilder.Create(DfsuFileType.Dfsu2D);
 
 % Create a temporal definition matching input file

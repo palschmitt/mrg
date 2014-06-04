@@ -1,3 +1,5 @@
 mrg:InputFail - The input was wrong
 mrg:DefaultValue - Warning about silent setting of default values
 mrg:UnitChange - Warning about silent unit changes
+mrg:FileNotFound - File not found
+mrg:NotImplemented - Not implemented yet
